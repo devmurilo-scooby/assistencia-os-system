@@ -21,7 +21,7 @@
 }
 
 .dashboard-filters {
-  @apply flex flex-wrap gap-2 mb-6;
+  @apply flex flex-wrap gap-2 mb-8;
 }
 
 .filter-btn-base {
@@ -36,11 +36,16 @@
   @apply bg-slate-900 text-slate-400 hover:bg-slate-800 border-slate-800;
 }
 
+/* Card do Estado Vazio (Empty State) Estilizado e Centralizado */
+.empty-state-card {
+  @apply bg-slate-900 border border-slate-800 rounded-2xl p-10 text-center max-w-lg mx-auto my-12 shadow-xl flex flex-col items-center justify-center gap-3;
+}
+
 .dashboard-grid {
   @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6;
 }
 
-/* Card Ajustado com Espaçamentos Elegantes */
+/* Card da OS no Grid */
 .os-card {
   @apply bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl hover:border-blue-500/50 transition-all duration-200 flex flex-col justify-between gap-4;
 }
@@ -77,7 +82,6 @@
   @apply bg-slate-950/70 p-4 rounded-xl border border-slate-800/80 mb-2;
 }
 
-/* Botões de Ação do Card Estilizados de Verdade */
 .os-actions-row {
   @apply flex items-center gap-2 pt-3 pb-3 border-t border-slate-800/80;
 }
@@ -94,13 +98,17 @@
   @apply flex justify-between items-center text-xs text-slate-400 pt-3 border-t border-slate-800;
 }
 
-/* Modal Overlay & Container */
+/* Modais (Formulário e Confirmação) */
 .modal-overlay {
   @apply fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50 overflow-y-auto;
 }
 
 .modal-container {
   @apply bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-2xl p-6 md:p-8 shadow-2xl my-8 max-h-[85vh] overflow-y-auto pr-4;
+}
+
+.modal-confirm-container {
+  @apply bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 md:p-8 shadow-2xl text-center flex flex-col items-center gap-4;
 }
 
 /* Scrollbar Customizada Escura */
@@ -149,4 +157,8 @@
 
 .btn-primary {
   @apply bg-blue-600 hover:bg-blue-500 text-white px-6 py-2.5 rounded-xl text-sm font-semibold transition cursor-pointer disabled:opacity-50 shadow-lg shadow-blue-600/20;
+}
+
+.btn-danger {
+  @apply bg-red-600 hover:bg-red-500 text-white px-6 py-2.5 rounded-xl text-sm font-semibold transition cursor-pointer shadow-lg shadow-red-600/20;
 }

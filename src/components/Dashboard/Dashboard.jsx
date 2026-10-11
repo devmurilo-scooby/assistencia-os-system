@@ -10,6 +10,11 @@ export default function Dashboard() {
   const [filtroStatus, setFiltroStatus] = useState('todos');
   const [editingId, setEditingId] = useState(null);
 
+  // Estado para o Modal de Confirmação de Exclusão
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [osToDelete, setOsToDelete] = useState(null);
+  const [excluindo, setExcluindo] = useState(false);
+
   // Função para aplicar máscara de telefone automático: (XX) XXXXX-XXXX
   const formatPhone = (value) => {
     if (!value) return '';
@@ -32,7 +37,6 @@ export default function Dashboard() {
     return `${day}/${month}/${year} - ${hours}:${minutes}`;
   };
 
-  // Helper para obter valor padronizado para input datetime-local (YYYY-MM-DDTHH:mm)
   const getDefaultDateTimeLocal = () => {
     const now = new Date();
     now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
@@ -114,15 +118,26 @@ export default function Dashboard() {
     setIsModalOpen(true);
   };
 
-  const handleDeleteOS = async (id, e) => {
+  // Abrir Modal de Confirmação de Exclusão Customizado
+  const handleOpenDeleteModal = (os, e) => {
     e.stopPropagation();
-    if (window.confirm('Tem certeza que deseja excluir esta Ordem de Serviço?')) {
-      try {
-        await deleteDoc(doc(db, 'ordens_servico', id));
-      } catch (error) {
-        console.error("Erro ao excluir OS: ", error);
-        alert("Erro ao excluir OS.");
-      }
+    setOsToDelete(os);
+    setDeleteModalOpen(true);
+  };
+
+  // Confirmar Exclusão no Firebase
+  const handleConfirmDelete = async () => {
+    if (!osToDelete) return;
+    setExcluindo(true);
+    try {
+      await deleteDoc(doc(db, 'ordens_servico', osToDelete.id));
+      setDeleteModalOpen(false);
+      setOsToDelete(null);
+    } catch (error) {
+      console.error("Erro ao excluir OS: ", error);
+      alert("Erro ao excluir OS no Firebase.");
+    } finally {
+      setExcluindo(false);
     }
   };
 
@@ -232,12 +247,14 @@ export default function Dashboard() {
       {loading ? (
         <div className="text-center py-20 text-slate-400">Carregando ordens de serviço do Firebase...</div>
       ) : osList.length === 0 ? (
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-12 text-center max-w-md mx-auto my-12 shadow-xl">
-          <p className="text-4xl mb-3">📋</p>
-          <h3 className="text-lg font-bold text-white mb-1">Nenhuma OS cadastrada</h3>
-          <p className="text-slate-400 text-sm mb-6">Clique no botão "+ Nova OS" acima para registrar o primeiro atendimento.</p>
-          <button onClick={handleOpenNewModal} className="dashboard-btn-new mx-auto">
-            Criar Primeira OS
+        <div className="empty-state-card">
+          <div className="text-5xl mb-2">📋</div>
+          <h3 className="text-xl font-bold text-white">Nenhuma OS cadastrada</h3>
+          <p className="text-slate-400 text-sm max-w-xs mb-2">
+            Não há ordens de serviço registradas no momento. Clique abaixo para iniciar.
+          </p>
+          <button onClick={handleOpenNewModal} className="dashboard-btn-new">
+            + Criar Primeira OS
           </button>
         </div>
       ) : (
@@ -246,7 +263,6 @@ export default function Dashboard() {
           {osFiltradas.map((os) => (
             <div key={os.id} className="os-card">
               <div>
-                {/* Cabeçalho do Card bem espaçado */}
                 <div className="os-card-header">
                   <span className="os-badge-num">OS #{os.numeroOS}</span>
                   <span className={getStatusBadgeClass(os.status)}>{os.status}</span>
@@ -266,7 +282,6 @@ export default function Dashboard() {
               </div>
 
               <div>
-                {/* Botões de Ação no Card Elegantes */}
                 <div className="os-actions-row">
                   <button 
                     onClick={(e) => handleOpenEditModal(os, e)}
@@ -275,14 +290,13 @@ export default function Dashboard() {
                     ✏️ Editar
                   </button>
                   <button 
-                    onClick={(e) => handleDeleteOS(os.id, e)}
+                    onClick={(e) => handleOpenDeleteModal(os, e)}
                     className="btn-card-delete"
                   >
                     🗑️ Excluir
                   </button>
                 </div>
 
-                {/* Rodapé do Card com Data/Hora Formata BR */}
                 <div className="os-footer">
                   <span>Previsão: <strong className="text-slate-200">{formatDateTimeBR(os.previsao)}</strong></span>
                   <span className="text-blue-400 font-semibold flex items-center gap-1 cursor-pointer hover:underline">
@@ -292,6 +306,40 @@ export default function Dashboard() {
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Modal de Confirmação de Exclusão (Customizado) */}
+      {deleteModalOpen && osToDelete && (
+        <div className="modal-overlay">
+          <div className="modal-confirm-container">
+            <div className="w-12 h-12 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-500 text-2xl">
+              ⚠️
+            </div>
+            <div>
+              <h3 className="text-lg font-bold text-white mb-1">Excluir Ordem de Serviço</h3>
+              <p className="text-slate-400 text-sm">
+                Tem certeza que deseja excluir a <strong className="text-slate-200">OS #{osToDelete.numeroOS}</strong> ({osToDelete.cliente})? Esta ação não poderá ser desfeita.
+              </p>
+            </div>
+            <div className="flex justify-center gap-3 w-full pt-2">
+              <button
+                type="button"
+                onClick={() => setDeleteModalOpen(false)}
+                className="btn-secondary flex-1"
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                disabled={excluindo}
+                onClick={handleConfirmDelete}
+                className="btn-danger flex-1"
+              >
+                {excluindo ? 'Excluindo...' : 'Sim, Excluir'}
+              </button>
+            </div>
+          </div>
         </div>
       )}
 
@@ -369,7 +417,7 @@ export default function Dashboard() {
                 ></textarea>
               </div>
 
-              {/* Serviços Pré-Aprovados Lado a Lado */}
+              {/* Serviços Pré-Aprovados */}
               <div className="form-group">
                 <label className="form-label mb-2">Serviços Pré-Aprovados e Valores</label>
                 <div className="space-y-3">
@@ -411,7 +459,7 @@ export default function Dashboard() {
                 </button>
               </div>
 
-              {/* Data e Hora de Entrada e Previsão */}
+              {/* Datas */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="form-group">
                   <label className="form-label">Data e Hora de Entrada</label>
@@ -433,7 +481,6 @@ export default function Dashboard() {
                 </div>
               </div>
 
-              {/* Botões do Modal */}
               <div className="modal-actions">
                 <button
                   type="button"
