@@ -76,15 +76,35 @@
   @apply flex justify-between items-center text-xs text-slate-400 pt-3 border-t border-slate-800;
 }
 
-/* Modal super polido com espaçamentos corretos */
+/* Modal Overlay & Container */
 .modal-overlay {
-  @apply fixed inset-0 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4 z-50 overflow-y-auto;
+  @apply fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50 overflow-y-auto;
 }
 
 .modal-container {
-  @apply bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-2xl p-6 md:p-8 shadow-2xl my-8 max-h-[90vh] overflow-y-auto;
+  @apply bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-2xl p-6 md:p-8 shadow-2xl my-8 max-h-[85vh] overflow-y-auto pr-4;
 }
 
+/* Scrollbar Customizada Bonita e Escura para o Modal */
+.modal-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modal-container::-webkit-scrollbar-track {
+  background: #0f172a;
+  border-radius: 8px;
+}
+
+.modal-container::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 8px;
+}
+
+.modal-container::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+/* Form Groups & Inputs */
 .form-group {
   @apply flex flex-col gap-1.5 mb-4;
 }
@@ -94,7 +114,16 @@
 }
 
 .form-input {
-  @apply w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500 transition;
+  @apply w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500 transition box-border;
+}
+
+/* Container de Serviços e Botões com espaçamento garantido */
+.servico-row {
+  @apply flex items-center gap-3 w-full mb-2;
+}
+
+.modal-actions {
+  @apply flex items-center justify-end gap-4 pt-6 mt-6 border-t border-slate-800;
 }
 
 .btn-secondary {

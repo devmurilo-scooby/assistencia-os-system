@@ -10,7 +10,7 @@ export default function Dashboard() {
   const [filtroStatus, setFiltroStatus] = useState('todos');
   const [editingId, setEditingId] = useState(null);
 
-  // Estados do Formulário de Nova OS
+  // Estados do Formulário
   const [numeroOS, setNumeroOS] = useState('');
   const [nomeCliente, setNomeCliente] = useState('');
   const [contato, setContato] = useState('');
@@ -21,7 +21,7 @@ export default function Dashboard() {
   const [dataPrevisao, setDataPrevisao] = useState('');
   const [salvando, setSalvando] = useState(false);
 
-  // Buscar OS do Firebase em tempo real
+  // Buscar OS em tempo real
   useEffect(() => {
     const q = collection(db, 'ordens_servico');
     const unsubscribe = onSnapshot(q, (snapshot) => {
@@ -39,25 +39,22 @@ export default function Dashboard() {
     return () => unsubscribe();
   }, []);
 
-  // Adicionar nova linha de serviço pré-aprovado
+  // Adicionar / Editar / Remover linhas de serviço
   const handleAddServicoRow = () => {
     setServicosPreAprovados([...servicosPreAprovados, { nome: '', valor: '' }]);
   };
 
-  // Atualizar linha de serviço específica
   const handleServicoChange = (index, field, value) => {
     const novosServicos = [...servicosPreAprovados];
     novosServicos[index][field] = value;
     setServicosPreAprovados(novosServicos);
   };
 
-  // Remover linha de serviço
   const handleRemoveServicoRow = (index) => {
     const novosServicos = servicosPreAprovados.filter((_, i) => i !== index);
     setServicosPreAprovados(novosServicos);
   };
 
-  // Abrir modal para criar nova OS
   const handleOpenNewModal = () => {
     setEditingId(null);
     setNumeroOS('');
@@ -71,9 +68,8 @@ export default function Dashboard() {
     setIsModalOpen(true);
   };
 
-  // Abrir modal para editar OS existente
   const handleOpenEditModal = (os, e) => {
-    e.stopPropagation(); // Evitar disparar cliques do card
+    e.stopPropagation();
     setEditingId(os.id);
     setNumeroOS(os.numeroOS || '');
     setNomeCliente(os.cliente || '');
@@ -86,7 +82,6 @@ export default function Dashboard() {
     setIsModalOpen(true);
   };
 
-  // Excluir OS
   const handleDeleteOS = async (id, e) => {
     e.stopPropagation();
     if (window.confirm('Tem certeza que deseja excluir esta Ordem de Serviço?')) {
@@ -99,7 +94,6 @@ export default function Dashboard() {
     }
   };
 
-  // Salvar (Criar ou Atualizar) OS no Firebase
   const handleSubmitOS = async (e) => {
     e.preventDefault();
     if (!numeroOS || !nomeCliente || !defeito) {
@@ -121,10 +115,8 @@ export default function Dashboard() {
       };
 
       if (editingId) {
-        // Atualizar OS existente
         await updateDoc(doc(db, 'ordens_servico', editingId), dadosOS);
       } else {
-        // Criar nova OS
         await addDoc(collection(db, 'ordens_servico'), {
           ...dadosOS,
           status: 'Aguardando',
@@ -141,7 +133,6 @@ export default function Dashboard() {
     }
   };
 
-  // Filtragem por status
   const osFiltradas = osList.filter(os => {
     if (filtroStatus === 'todos') return true;
     const statusLower = (os.status || '').toLowerCase();
@@ -242,7 +233,6 @@ export default function Dashboard() {
               </div>
 
               <div>
-                {/* Botões de Ação no Card (Editar e Excluir) */}
                 <div className="flex items-center justify-between mb-3 pt-2 border-t border-slate-800">
                   <div className="flex gap-2">
                     <button 
@@ -283,7 +273,7 @@ export default function Dashboard() {
               {editingId ? 'Altere as informações necessárias da OS.' : 'Preencha as informações iniciais para registrar o aparelho.'}
             </p>
             
-            <form onSubmit={handleSubmitOS} className="space-y-5">
+            <form onSubmit={handleSubmitOS}>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="form-group">
                   <label className="form-label">Número da OS *</label>
@@ -345,12 +335,12 @@ export default function Dashboard() {
                 ></textarea>
               </div>
 
-              {/* Seção de Serviços Pré-Aprovados Dinâmicos */}
+              {/* Seção de Serviços Pré-Aprovados Lado a Lado (Nome + Valor) */}
               <div className="form-group">
                 <label className="form-label mb-2">Serviços Pré-Aprovados e Valores</label>
                 <div className="space-y-3">
                   {servicosPreAprovados.map((servico, index) => (
-                    <div key={index} className="flex items-center gap-2">
+                    <div key={index} className="servico-row">
                       <input
                         type="text"
                         value={servico.nome}
@@ -364,7 +354,7 @@ export default function Dashboard() {
                         value={servico.valor}
                         onChange={(e) => handleServicoChange(index, 'valor', e.target.value)}
                         placeholder="Valor (R$)"
-                        className="form-input w-32"
+                        className="form-input w-36"
                       />
                       {servicosPreAprovados.length > 1 && (
                         <button
@@ -381,13 +371,13 @@ export default function Dashboard() {
                 <button
                   type="button"
                   onClick={handleAddServicoRow}
-                  className="mt-3 bg-slate-800 hover:bg-slate-700 text-blue-400 text-xs font-semibold px-4 py-2 rounded-xl border border-slate-700 transition cursor-pointer flex items-center gap-1.5"
+                  className="mt-2 bg-slate-800 hover:bg-slate-700 text-blue-400 text-xs font-semibold px-4 py-2.5 rounded-xl border border-slate-700 transition cursor-pointer flex items-center gap-1.5"
                 >
                   <span>+</span> Adicionar Nova Linha de Serviço
                 </button>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="form-group">
                   <label className="form-label">Data de Entrada</label>
                   <input
@@ -408,7 +398,8 @@ export default function Dashboard() {
                 </div>
               </div>
 
-              <div className="flex justify-end gap-3 pt-6 border-t border-slate-800">
+              {/* Ações do Modal com espaçamento correto entre botões */}
+              <div className="modal-actions">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
