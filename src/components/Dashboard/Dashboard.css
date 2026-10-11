@@ -1,0 +1,167 @@
+/* src/components/Dashboard/Dashboard.css */
+
+.dashboard-wrapper {
+  @apply min-h-screen bg-slate-950 text-slate-100 p-6 md:p-8 w-full box-border;
+}
+
+.dashboard-header {
+  @apply flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8 bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl;
+}
+
+.dashboard-title {
+  @apply text-2xl font-bold text-white flex items-center gap-3;
+}
+
+.dashboard-subtitle {
+  @apply text-slate-400 text-sm mt-1;
+}
+
+.dashboard-btn-new {
+  @apply bg-blue-600 hover:bg-blue-500 text-white px-5 py-2.5 rounded-xl font-semibold transition shadow-md hover:shadow-blue-500/20 flex items-center gap-2 cursor-pointer;
+}
+
+.dashboard-filters {
+  @apply flex flex-wrap gap-2 mb-8;
+}
+
+.filter-btn-base {
+  @apply px-4 py-2 rounded-xl text-sm font-medium transition cursor-pointer border;
+}
+
+.filter-btn-active {
+  @apply bg-blue-600 text-white shadow-md border-blue-500;
+}
+
+.filter-btn-inactive {
+  @apply bg-slate-900 text-slate-400 hover:bg-slate-800 border-slate-800;
+}
+
+/* Card do Estado Vazio (Empty State) Estilizado e Centralizado */
+.empty-state-card {
+  @apply bg-slate-900 border border-slate-800 rounded-2xl p-10 text-center max-w-lg mx-auto my-12 shadow-xl flex flex-col items-center justify-center gap-3;
+}
+
+.dashboard-grid {
+  @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6;
+}
+
+/* Card da OS no Grid */
+.os-card {
+  @apply bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl hover:border-blue-500/50 transition-all duration-200 flex flex-col justify-between gap-4;
+}
+
+.os-card-header {
+  @apply flex items-center justify-between gap-3 mb-4;
+}
+
+.os-badge-num {
+  @apply bg-slate-800 text-blue-400 text-xs font-bold px-3 py-1.5 rounded-lg border border-slate-700;
+}
+
+.os-badge-status-amber {
+  @apply text-xs px-3 py-1.5 rounded-full font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20;
+}
+
+.os-badge-status-emerald {
+  @apply text-xs px-3 py-1.5 rounded-full font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20;
+}
+
+.os-badge-status-purple {
+  @apply text-xs px-3 py-1.5 rounded-full font-semibold bg-purple-500/10 text-purple-400 border border-purple-500/20;
+}
+
+.os-client-name {
+  @apply text-lg font-bold text-white mb-1.5;
+}
+
+.os-client-info {
+  @apply text-slate-400 text-xs mb-4 flex items-center gap-2.5 flex-wrap;
+}
+
+.os-defeito-box {
+  @apply bg-slate-950/70 p-4 rounded-xl border border-slate-800/80 mb-2;
+}
+
+.os-actions-row {
+  @apply flex items-center gap-2 pt-3 pb-3 border-t border-slate-800/80;
+}
+
+.btn-card-edit {
+  @apply bg-slate-800 hover:bg-blue-600/20 text-blue-400 hover:text-blue-300 text-xs font-semibold px-3 py-1.5 rounded-lg border border-slate-700/80 transition cursor-pointer flex items-center gap-1;
+}
+
+.btn-card-delete {
+  @apply bg-slate-800 hover:bg-red-600/20 text-red-400 hover:text-red-300 text-xs font-semibold px-3 py-1.5 rounded-lg border border-slate-700/80 transition cursor-pointer flex items-center gap-1;
+}
+
+.os-footer {
+  @apply flex justify-between items-center text-xs text-slate-400 pt-3 border-t border-slate-800;
+}
+
+/* Modais (Formulário e Confirmação) */
+.modal-overlay {
+  @apply fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50 overflow-y-auto;
+}
+
+.modal-container {
+  @apply bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-2xl p-6 md:p-8 shadow-2xl my-8 max-h-[85vh] overflow-y-auto pr-4;
+}
+
+.modal-confirm-container {
+  @apply bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 md:p-8 shadow-2xl text-center flex flex-col items-center gap-6;
+}
+
+.modal-confirm-actions {
+  @apply flex items-center justify-center gap-4 w-full pt-2;
+}
+/* Scrollbar Customizada Escura */
+.modal-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modal-container::-webkit-scrollbar-track {
+  background: #0f172a;
+  border-radius: 8px;
+}
+
+.modal-container::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 8px;
+}
+
+.modal-container::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+/* Form Groups & Inputs */
+.form-group {
+  @apply flex flex-col gap-1.5 mb-4;
+}
+
+.form-label {
+  @apply block text-xs font-semibold uppercase text-slate-300 tracking-wider;
+}
+
+.form-input {
+  @apply w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500 transition box-border;
+}
+
+.servico-row {
+  @apply flex items-center gap-3 w-full mb-2;
+}
+
+.modal-actions {
+  @apply flex items-center justify-end gap-4 pt-6 mt-6 border-t border-slate-800;
+}
+
+.btn-secondary {
+  @apply bg-slate-800 hover:bg-slate-700 text-white px-5 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer border border-slate-700;
+}
+
+.btn-primary {
+  @apply bg-blue-600 hover:bg-blue-500 text-white px-6 py-2.5 rounded-xl text-sm font-semibold transition cursor-pointer disabled:opacity-50 shadow-lg shadow-blue-600/20;
+}
+
+.btn-danger {
+  @apply bg-red-600 hover:bg-red-500 text-white px-6 py-2.5 rounded-xl text-sm font-semibold transition cursor-pointer shadow-lg shadow-red-600/20;
+}
