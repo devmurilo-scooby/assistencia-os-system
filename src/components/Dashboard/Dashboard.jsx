@@ -200,7 +200,6 @@ export default function Dashboard({ onLogout, userEmail }) {
     <div className="dashboard-wrapper">
       
       {/* Cabeçalho */}
-{/* Cabeçalho do Dashboard com botão de logout alinhado */}
       <div className="dashboard-header">
         <div>
           <h1 className="dashboard-title">
@@ -211,7 +210,7 @@ export default function Dashboard({ onLogout, userEmail }) {
           </p>
         </div>
         
-        <div className="flex items-center gap-3">
+        <div className="dashboard-actions-group">
           <button onClick={handleOpenNewModal} className="dashboard-btn-new">
             <span className="text-lg">+</span> Nova OS
           </button>
@@ -219,10 +218,10 @@ export default function Dashboard({ onLogout, userEmail }) {
           {onLogout && (
             <button
               onClick={onLogout}
-              className="bg-slate-800 hover:bg-red-500/20 text-slate-300 hover:text-red-400 border border-slate-700 px-4 py-2.5 rounded-xl font-semibold text-sm transition cursor-pointer flex items-center gap-2"
-              title="Encerrar sessão"
+              className="btn-logout"
+              title="Encerrar Sessão"
             >
-              🚪 Sair
+              <span>🚪</span> Sair
             </button>
           )}
         </div>

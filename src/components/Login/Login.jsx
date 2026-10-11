@@ -66,7 +66,7 @@ export default function Login() {
     <div className="login-wrapper">
       <div className="login-card">
         
-        {/* Cabeçalho */}
+        {/* Cabeçalho do Card */}
         <div className="login-header">
           <div className="login-icon-box">🛠️</div>
           <h1 className="login-title">Assistência Técnica</h1>
@@ -75,15 +75,15 @@ export default function Login() {
           </p>
         </div>
 
-        {/* Alertas */}
+        {/* Mensagens de Alerta */}
         {erro && <div className="login-alert-error">{erro}</div>}
         {sucesso && <div className="login-alert-success">{sucesso}</div>}
 
         {/* Formulário de Esqueci a Senha */}
         {modoEsqueciSenha ? (
-          <form onSubmit={handleResetPassword} className="flex flex-col gap-4">
+          <form onSubmit={handleResetPassword} className="flex flex-col gap-2">
             <div className="login-form-group">
-              <label className="login-label">E-mail Cadastrado</label>
+              <label className="login-label mb-1">E-mail Cadastrado</label>
               <input
                 type="email"
                 required
@@ -105,16 +105,16 @@ export default function Login() {
             <button
               type="button"
               onClick={() => { setModoEsqueciSenha(false); setErro(''); setSucesso(''); }}
-              className="text-xs text-slate-400 hover:text-white transition cursor-pointer text-center mt-2 underline"
+              className="text-xs text-slate-400 hover:text-white transition cursor-pointer text-center mt-3 underline"
             >
               ← Voltar para o Login
             </button>
           </form>
         ) : (
-          /* Formulário Principal de Login */
-          <form onSubmit={handleLogin} className="flex flex-col gap-4">
+          /* Formulário de Login */
+          <form onSubmit={handleLogin} className="flex flex-col gap-2">
             <div className="login-form-group">
-              <label className="login-label">E-mail de Acesso</label>
+              <label className="login-label mb-1">E-mail de Acesso</label>
               <input
                 type="email"
                 required
@@ -126,7 +126,7 @@ export default function Login() {
             </div>
 
             <div className="login-form-group">
-              <div className="flex justify-between items-center">
+              <div className="flex justify-between items-center mb-1">
                 <label className="login-label">Senha</label>
                 <button
                   type="button"
@@ -144,7 +144,7 @@ export default function Login() {
                   value={senha}
                   onChange={(e) => setSenha(e.target.value)}
                   placeholder="••••••••"
-                  className="login-input pr-10"
+                  className="login-input pr-11"
                 />
                 <button
                   type="button"
