@@ -40,36 +40,54 @@
   @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6;
 }
 
+/* Card Ajustado com Espaçamentos Elegantes */
 .os-card {
-  @apply bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl hover:border-blue-500/50 transition-all duration-200 flex flex-col justify-between;
+  @apply bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl hover:border-blue-500/50 transition-all duration-200 flex flex-col justify-between gap-4;
+}
+
+.os-card-header {
+  @apply flex items-center justify-between gap-3 mb-4;
 }
 
 .os-badge-num {
-  @apply bg-slate-800 text-blue-400 text-xs font-bold px-3 py-1 rounded-lg border border-slate-700;
+  @apply bg-slate-800 text-blue-400 text-xs font-bold px-3 py-1.5 rounded-lg border border-slate-700;
 }
 
 .os-badge-status-amber {
-  @apply text-xs px-2.5 py-1 rounded-full font-medium bg-amber-500/10 text-amber-400 border border-amber-500/20;
+  @apply text-xs px-3 py-1.5 rounded-full font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20;
 }
 
 .os-badge-status-emerald {
-  @apply text-xs px-2.5 py-1 rounded-full font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20;
+  @apply text-xs px-3 py-1.5 rounded-full font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20;
 }
 
 .os-badge-status-purple {
-  @apply text-xs px-2.5 py-1 rounded-full font-medium bg-purple-500/10 text-purple-400 border border-purple-500/20;
+  @apply text-xs px-3 py-1.5 rounded-full font-semibold bg-purple-500/10 text-purple-400 border border-purple-500/20;
 }
 
 .os-client-name {
-  @apply text-lg font-bold text-white mb-0.5;
+  @apply text-lg font-bold text-white mb-1.5;
 }
 
 .os-client-info {
-  @apply text-slate-400 text-xs mb-3 flex items-center gap-2;
+  @apply text-slate-400 text-xs mb-4 flex items-center gap-2.5 flex-wrap;
 }
 
 .os-defeito-box {
-  @apply bg-slate-950/60 p-3.5 rounded-xl border border-slate-800/80 mb-4;
+  @apply bg-slate-950/70 p-4 rounded-xl border border-slate-800/80 mb-2;
+}
+
+/* Botões de Ação do Card Estilizados de Verdade */
+.os-actions-row {
+  @apply flex items-center gap-2 pt-3 pb-3 border-t border-slate-800/80;
+}
+
+.btn-card-edit {
+  @apply bg-slate-800 hover:bg-blue-600/20 text-blue-400 hover:text-blue-300 text-xs font-semibold px-3 py-1.5 rounded-lg border border-slate-700/80 transition cursor-pointer flex items-center gap-1;
+}
+
+.btn-card-delete {
+  @apply bg-slate-800 hover:bg-red-600/20 text-red-400 hover:text-red-300 text-xs font-semibold px-3 py-1.5 rounded-lg border border-slate-700/80 transition cursor-pointer flex items-center gap-1;
 }
 
 .os-footer {
@@ -85,7 +103,7 @@
   @apply bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-2xl p-6 md:p-8 shadow-2xl my-8 max-h-[85vh] overflow-y-auto pr-4;
 }
 
-/* Scrollbar Customizada Bonita e Escura para o Modal */
+/* Scrollbar Customizada Escura */
 .modal-container::-webkit-scrollbar {
   width: 8px;
 }
@@ -117,7 +135,6 @@
   @apply w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500 transition box-border;
 }
 
-/* Container de Serviços e Botões com espaçamento garantido */
 .servico-row {
   @apply flex items-center gap-3 w-full mb-2;
 }

@@ -10,6 +10,35 @@ export default function Dashboard() {
   const [filtroStatus, setFiltroStatus] = useState('todos');
   const [editingId, setEditingId] = useState(null);
 
+  // Função para aplicar máscara de telefone automático: (XX) XXXXX-XXXX
+  const formatPhone = (value) => {
+    if (!value) return '';
+    const digits = value.replace(/\D/g, '').slice(0, 11);
+    if (digits.length <= 2) return `(${digits}`;
+    if (digits.length <= 7) return `(${digits.slice(0, 2)}) ${digits.slice(2)}`;
+    return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`;
+  };
+
+  // Função para formatar data ISO para Padrão BR (DD/MM/AAAA - HH:mm)
+  const formatDateTimeBR = (isoString) => {
+    if (!isoString || isoString === 'Não informada') return 'Não informada';
+    const date = new Date(isoString);
+    if (isNaN(date.getTime())) return isoString;
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    return `${day}/${month}/${year} - ${hours}:${minutes}`;
+  };
+
+  // Helper para obter valor padronizado para input datetime-local (YYYY-MM-DDTHH:mm)
+  const getDefaultDateTimeLocal = () => {
+    const now = new Date();
+    now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+    return now.toISOString().slice(0, 16);
+  };
+
   // Estados do Formulário
   const [numeroOS, setNumeroOS] = useState('');
   const [nomeCliente, setNomeCliente] = useState('');
@@ -17,7 +46,7 @@ export default function Dashboard() {
   const [tipoAparelho, setTipoAparelho] = useState('notebook');
   const [defeito, setDefeito] = useState('');
   const [servicosPreAprovados, setServicosPreAprovados] = useState([{ nome: '', valor: '' }]);
-  const [dataEntrada, setDataEntrada] = useState(new Date().toISOString().split('T')[0]);
+  const [dataEntrada, setDataEntrada] = useState(getDefaultDateTimeLocal());
   const [dataPrevisao, setDataPrevisao] = useState('');
   const [salvando, setSalvando] = useState(false);
 
@@ -39,7 +68,10 @@ export default function Dashboard() {
     return () => unsubscribe();
   }, []);
 
-  // Adicionar / Editar / Remover linhas de serviço
+  const handleContatoChange = (e) => {
+    setContato(formatPhone(e.target.value));
+  };
+
   const handleAddServicoRow = () => {
     setServicosPreAprovados([...servicosPreAprovados, { nome: '', valor: '' }]);
   };
@@ -63,7 +95,7 @@ export default function Dashboard() {
     setTipoAparelho('notebook');
     setDefeito('');
     setServicosPreAprovados([{ nome: '', valor: '' }]);
-    setDataEntrada(new Date().toISOString().split('T')[0]);
+    setDataEntrada(getDefaultDateTimeLocal());
     setDataPrevisao('');
     setIsModalOpen(true);
   };
@@ -77,7 +109,7 @@ export default function Dashboard() {
     setTipoAparelho(os.tipo || 'notebook');
     setDefeito(os.defeito || '');
     setServicosPreAprovados(os.servicosPreAprovados?.length > 0 ? os.servicosPreAprovados : [{ nome: '', valor: '' }]);
-    setDataEntrada(os.dataEntrada || new Date().toISOString().split('T')[0]);
+    setDataEntrada(os.dataEntrada || getDefaultDateTimeLocal());
     setDataPrevisao(os.previsao || '');
     setIsModalOpen(true);
   };
@@ -214,14 +246,15 @@ export default function Dashboard() {
           {osFiltradas.map((os) => (
             <div key={os.id} className="os-card">
               <div>
-                <div className="flex justify-between items-center mb-3">
+                {/* Cabeçalho do Card bem espaçado */}
+                <div className="os-card-header">
                   <span className="os-badge-num">OS #{os.numeroOS}</span>
                   <span className={getStatusBadgeClass(os.status)}>{os.status}</span>
                 </div>
 
                 <h3 className="os-client-name">{os.cliente}</h3>
                 <p className="os-client-info">
-                  <span>📱 {os.contato || 'Sem contato'}</span>
+                  <span>📱 {os.contato ? formatPhone(os.contato) : 'Sem contato'}</span>
                   <span>•</span>
                   <span className="capitalize font-semibold text-slate-300">💻 {os.tipo}</span>
                 </p>
@@ -233,25 +266,25 @@ export default function Dashboard() {
               </div>
 
               <div>
-                <div className="flex items-center justify-between mb-3 pt-2 border-t border-slate-800">
-                  <div className="flex gap-2">
-                    <button 
-                      onClick={(e) => handleOpenEditModal(os, e)}
-                      className="bg-slate-800 hover:bg-slate-700 text-blue-400 text-xs px-2.5 py-1 rounded-lg border border-slate-700 transition cursor-pointer"
-                    >
-                      Editar
-                    </button>
-                    <button 
-                      onClick={(e) => handleDeleteOS(os.id, e)}
-                      className="bg-slate-800 hover:bg-red-500/20 text-red-400 text-xs px-2.5 py-1 rounded-lg border border-slate-700 transition cursor-pointer"
-                    >
-                      Excluir
-                    </button>
-                  </div>
+                {/* Botões de Ação no Card Elegantes */}
+                <div className="os-actions-row">
+                  <button 
+                    onClick={(e) => handleOpenEditModal(os, e)}
+                    className="btn-card-edit"
+                  >
+                    ✏️ Editar
+                  </button>
+                  <button 
+                    onClick={(e) => handleDeleteOS(os.id, e)}
+                    className="btn-card-delete"
+                  >
+                    🗑️ Excluir
+                  </button>
                 </div>
 
+                {/* Rodapé do Card com Data/Hora Formata BR */}
                 <div className="os-footer">
-                  <span>Previsão: <strong className="text-slate-200">{os.previsao}</strong></span>
+                  <span>Previsão: <strong className="text-slate-200">{formatDateTimeBR(os.previsao)}</strong></span>
                   <span className="text-blue-400 font-semibold flex items-center gap-1 cursor-pointer hover:underline">
                     Abrir OS →
                   </span>
@@ -316,8 +349,9 @@ export default function Dashboard() {
                   <input
                     type="text"
                     value={contato}
-                    onChange={(e) => setContato(e.target.value)}
-                    placeholder="Ex: (43) 99999-9999"
+                    onChange={handleContatoChange}
+                    placeholder="(43) 99999-9999"
+                    maxLength={15}
                     className="form-input"
                   />
                 </div>
@@ -335,7 +369,7 @@ export default function Dashboard() {
                 ></textarea>
               </div>
 
-              {/* Seção de Serviços Pré-Aprovados Lado a Lado (Nome + Valor) */}
+              {/* Serviços Pré-Aprovados Lado a Lado */}
               <div className="form-group">
                 <label className="form-label mb-2">Serviços Pré-Aprovados e Valores</label>
                 <div className="space-y-3">
@@ -377,20 +411,21 @@ export default function Dashboard() {
                 </button>
               </div>
 
+              {/* Data e Hora de Entrada e Previsão */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="form-group">
-                  <label className="form-label">Data de Entrada</label>
+                  <label className="form-label">Data e Hora de Entrada</label>
                   <input
-                    type="date"
+                    type="datetime-local"
                     value={dataEntrada}
                     onChange={(e) => setDataEntrada(e.target.value)}
                     className="form-input"
                   />
                 </div>
                 <div className="form-group">
-                  <label className="form-label">Data Prevista</label>
+                  <label className="form-label">Data e Hora Prevista</label>
                   <input
-                    type="date"
+                    type="datetime-local"
                     value={dataPrevisao}
                     onChange={(e) => setDataPrevisao(e.target.value)}
                     className="form-input"
@@ -398,7 +433,7 @@ export default function Dashboard() {
                 </div>
               </div>
 
-              {/* Ações do Modal com espaçamento correto entre botões */}
+              {/* Botões do Modal */}
               <div className="modal-actions">
                 <button
                   type="button"
