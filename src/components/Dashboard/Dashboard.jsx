@@ -309,7 +309,7 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* Modal de Confirmação de Exclusão (Customizado) */}
+{/* Modal de Confirmação de Exclusão (Customizado) */}
       {deleteModalOpen && osToDelete && (
         <div className="modal-overlay">
           <div className="modal-confirm-container">
@@ -322,11 +322,11 @@ export default function Dashboard() {
                 Tem certeza que deseja excluir a <strong className="text-slate-200">OS #{osToDelete.numeroOS}</strong> ({osToDelete.cliente})? Esta ação não poderá ser desfeita.
               </p>
             </div>
-            <div className="flex justify-center gap-3 w-full pt-2">
+            <div className="modal-confirm-actions">
               <button
                 type="button"
                 onClick={() => setDeleteModalOpen(false)}
-                className="btn-secondary flex-1"
+                className="btn-secondary flex-1 py-3"
               >
                 Cancelar
               </button>
@@ -334,7 +334,7 @@ export default function Dashboard() {
                 type="button"
                 disabled={excluindo}
                 onClick={handleConfirmDelete}
-                className="btn-danger flex-1"
+                className="btn-danger flex-1 py-3"
               >
                 {excluindo ? 'Excluindo...' : 'Sim, Excluir'}
               </button>

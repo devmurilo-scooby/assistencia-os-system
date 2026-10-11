@@ -108,9 +108,12 @@
 }
 
 .modal-confirm-container {
-  @apply bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 md:p-8 shadow-2xl text-center flex flex-col items-center gap-4;
+  @apply bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 md:p-8 shadow-2xl text-center flex flex-col items-center gap-6;
 }
 
+.modal-confirm-actions {
+  @apply flex items-center justify-center gap-4 w-full pt-2;
+}
 /* Scrollbar Customizada Escura */
 .modal-container::-webkit-scrollbar {
   width: 8px;
