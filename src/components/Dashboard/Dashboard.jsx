@@ -3,7 +3,7 @@ import { db } from '../../services/firebase';
 import { collection, onSnapshot, addDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore';
 import './Dashboard.css';
 
-export default function Dashboard() {
+export default function Dashboard({ onLogout, userEmail }) {
   const [osList, setOsList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -200,19 +200,32 @@ export default function Dashboard() {
     <div className="dashboard-wrapper">
       
       {/* Cabeçalho */}
+{/* Cabeçalho do Dashboard com botão de logout alinhado */}
       <div className="dashboard-header">
         <div>
           <h1 className="dashboard-title">
             🛠️ Assistência Técnica - Ordens de Serviço
           </h1>
           <p className="dashboard-subtitle">
-            Firebase Conectado • Painel em tempo real
+            Conectado como <strong className="text-slate-200">{userEmail}</strong>
           </p>
         </div>
         
-        <button onClick={handleOpenNewModal} className="dashboard-btn-new">
-          <span className="text-lg">+</span> Nova OS
-        </button>
+        <div className="flex items-center gap-3">
+          <button onClick={handleOpenNewModal} className="dashboard-btn-new">
+            <span className="text-lg">+</span> Nova OS
+          </button>
+          
+          {onLogout && (
+            <button
+              onClick={onLogout}
+              className="bg-slate-800 hover:bg-red-500/20 text-slate-300 hover:text-red-400 border border-slate-700 px-4 py-2.5 rounded-xl font-semibold text-sm transition cursor-pointer flex items-center gap-2"
+              title="Encerrar sessão"
+            >
+              🚪 Sair
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Filtros Rápidos */}

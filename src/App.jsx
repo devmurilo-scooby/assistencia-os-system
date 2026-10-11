@@ -9,7 +9,6 @@ export default function App() {
   const [user, setUser] = useState(null);
   const [loadingAuth, setLoadingAuth] = useState(true);
 
-  // Monitorar estado de autenticação do Firebase em tempo real
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
@@ -34,25 +33,9 @@ export default function App() {
     );
   }
 
-  // Se não estiver logado, exibe a tela de login
   if (!user) {
     return <Login />;
   }
 
-  // Se estiver logado, exibe o Dashboard com opção de Sair no topo
-  return (
-    <div className="relative">
-      {/* Botão de Logout Flutuante / Discreto no topo direito */}
-      <div className="absolute top-6 right-6 md:right-8 z-40">
-        <button
-          onClick={handleLogout}
-          className="bg-slate-900 hover:bg-red-500/10 text-slate-400 hover:text-red-400 text-xs font-semibold px-4 py-2 rounded-xl border border-slate-800 transition cursor-pointer flex items-center gap-1.5 shadow-lg"
-        >
-          <span>🚪</span> Sair da Conta
-        </button>
-      </div>
-
-      <Dashboard />
-    </div>
-  );
+  return <Dashboard onLogout={handleLogout} userEmail={user.email} />;
 }

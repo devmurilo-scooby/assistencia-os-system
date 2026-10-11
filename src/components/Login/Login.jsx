@@ -1,30 +1,61 @@
 // src/components/Login/Login.jsx
 import React, { useState } from 'react';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
 import { auth } from '../../services/firebase';
+import './Login.css';
 
-export default function Login({ onLoginSuccess }) {
+export default function Login() {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
+  const [mostrarSenha, setMostrarSenha] = useState(false);
+  
   const [erro, setErro] = useState('');
+  const [sucesso, setSucesso] = useState('');
   const [carregando, setCarregando] = useState(false);
+  const [modoEsqueciSenha, setModoEsqueciSenha] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setErro('');
+    setSucesso('');
     setCarregando(true);
 
     try {
       await signInWithEmailAndPassword(auth, email, senha);
-      onLoginSuccess();
     } catch (err) {
       console.error("Erro no login: ", err);
       if (err.code === 'auth/invalid-credential' || err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password') {
         setErro('E-mail ou senha incorretos.');
       } else if (err.code === 'auth/invalid-email') {
-        setErro('E-mail com formato inválido.');
+        setErro('Formato de e-mail inválido.');
       } else {
-        setErro('Erro ao fazer login. Tente novamente.');
+        setErro('Erro ao fazer login. Verifique sua conexão.');
+      }
+    } finally {
+      setCarregando(false);
+    }
+  };
+
+  const handleResetPassword = async (e) => {
+    e.preventDefault();
+    if (!email) {
+      setErro('Digite seu e-mail para redefinir a senha.');
+      return;
+    }
+
+    setErro('');
+    setSucesso('');
+    setCarregando(true);
+
+    try {
+      await sendPasswordResetEmail(auth, email);
+      setSucesso('E-mail de redefinição enviado! Verifique sua caixa de entrada.');
+    } catch (err) {
+      console.error("Erro na redefinição de senha: ", err);
+      if (err.code === 'auth/user-not-found') {
+        setErro('Nenhuma conta encontrada com este e-mail.');
+      } else {
+        setErro('Erro ao enviar e-mail de redefinição.');
       }
     } finally {
       setCarregando(false);
@@ -32,60 +63,109 @@ export default function Login({ onLoginSuccess }) {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex items-center justify-center p-4">
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-8 shadow-2xl">
+    <div className="login-wrapper">
+      <div className="login-card">
         
-        <div className="text-center mb-8">
-          <div className="w-14 h-14 bg-blue-600/10 border border-blue-500/20 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-3 shadow-inner">
-            🛠️
-          </div>
-          <h1 className="text-2xl font-bold text-white">Assistência Técnica</h1>
-          <p className="text-slate-400 text-sm mt-1">Faça login para acessar o painel de OS</p>
+        {/* Cabeçalho */}
+        <div className="login-header">
+          <div className="login-icon-box">🛠️</div>
+          <h1 className="login-title">Assistência Técnica</h1>
+          <p className="login-subtitle">
+            {modoEsqueciSenha ? 'Recuperação de Acesso' : 'Painel do Técnico de Serviço'}
+          </p>
         </div>
 
-        {erro && (
-          <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-semibold p-3.5 rounded-xl mb-6 text-center">
-            {erro}
-          </div>
+        {/* Alertas */}
+        {erro && <div className="login-alert-error">{erro}</div>}
+        {sucesso && <div className="login-alert-success">{sucesso}</div>}
+
+        {/* Formulário de Esqueci a Senha */}
+        {modoEsqueciSenha ? (
+          <form onSubmit={handleResetPassword} className="flex flex-col gap-4">
+            <div className="login-form-group">
+              <label className="login-label">E-mail Cadastrado</label>
+              <input
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="seu.email@assistencia.com"
+                className="login-input"
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={carregando}
+              className="login-btn-primary"
+            >
+              {carregando ? 'Enviando...' : 'Enviar E-mail de Redefinição'}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => { setModoEsqueciSenha(false); setErro(''); setSucesso(''); }}
+              className="text-xs text-slate-400 hover:text-white transition cursor-pointer text-center mt-2 underline"
+            >
+              ← Voltar para o Login
+            </button>
+          </form>
+        ) : (
+          /* Formulário Principal de Login */
+          <form onSubmit={handleLogin} className="flex flex-col gap-4">
+            <div className="login-form-group">
+              <label className="login-label">E-mail de Acesso</label>
+              <input
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="tecnico@assistencia.com"
+                className="login-input"
+              />
+            </div>
+
+            <div className="login-form-group">
+              <div className="flex justify-between items-center">
+                <label className="login-label">Senha</label>
+                <button
+                  type="button"
+                  onClick={() => { setModoEsqueciSenha(true); setErro(''); setSucesso(''); }}
+                  className="forgot-password-link"
+                >
+                  Esqueceu a senha?
+                </button>
+              </div>
+
+              <div className="login-input-wrapper">
+                <input
+                  type={mostrarSenha ? 'text' : 'password'}
+                  required
+                  value={senha}
+                  onChange={(e) => setSenha(e.target.value)}
+                  placeholder="••••••••"
+                  className="login-input pr-10"
+                />
+                <button
+                  type="button"
+                  onClick={() => setMostrarSenha(!mostrarSenha)}
+                  className="toggle-password-btn"
+                  title={mostrarSenha ? 'Ocultar Senha' : 'Exibir Senha'}
+                >
+                  {mostrarSenha ? '🙈' : '👁️'}
+                </button>
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={carregando}
+              className="login-btn-primary"
+            >
+              {carregando ? 'Entrando...' : 'Entrar no Sistema'}
+            </button>
+          </form>
         )}
-
-        <form onSubmit={handleLogin} className="space-y-4">
-          <div>
-            <label className="block text-xs font-semibold uppercase text-slate-300 tracking-wider mb-1.5">
-              E-mail de Acesso
-            </label>
-            <input
-              type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="tecnico@assistencia.com"
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500 transition box-border"
-            />
-          </div>
-
-          <div>
-            <label className="block text-xs font-semibold uppercase text-slate-300 tracking-wider mb-1.5">
-              Senha
-            </label>
-            <input
-              type="password"
-              required
-              value={senha}
-              onChange={(e) => setSenha(e.target.value)}
-              placeholder="••••••••"
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500 transition box-border"
-            />
-          </div>
-
-          <button
-            type="submit"
-            disabled={carregando}
-            className="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 rounded-xl transition shadow-lg shadow-blue-600/20 cursor-pointer disabled:opacity-50 mt-2"
-          >
-            {carregando ? 'Entrando...' : 'Entrar no Sistema'}
-          </button>
-        </form>
 
       </div>
     </div>
