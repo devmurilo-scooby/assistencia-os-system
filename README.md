@@ -1,16 +1,51 @@
-# React + Vite
+# 🛠️ Assistência Técnica - Sistema de Gestão de Ordens de Serviço (OS)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Um sistema moderno, responsivo e em tempo real para gerenciamento de Ordens de Serviço em assistências técnicas de informática (notebooks, desktops e periféricos). Desenvolvido com **React (Vite)**, **Tailwind CSS** e **Firebase Firestore**.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 🚀 Funcionalidades Principais
 
-## React Compiler
+- **📊 Dashboard em Tempo Real:** Listagem dinâmica conectada ao Firebase Firestore com atualização instantânea.
+- **🏷️ Filtros Rápidos:** Filtragem rápida de OS por status (*Todas*, *Aguardando*, *Em Andamento*, *Orçamento Enviado*).
+- **📝 Gestão Completa de OS (CRUD):**
+  - Cadastro e edição com número de OS, dados do cliente, tipo de equipamento e defeito relatado.
+  - **Serviços Pré-Aprovados Dinâmicos:** Adição em lote de serviços e valores por linha.
+  - **Datas e Horários:** Registros precisos de entrada e previsão de entrega (`DD/MM/AAAA - HH:mm`).
+- **📱 Máscaras Automáticas:** Formatação e validação inteligente de telefone/WhatsApp `(XX) XXXXX-XXXX`.
+- **🎨 UI/UX Refinada:** 
+  - Interface Dark Mode em tons de Slate com componentes isolados e modais customizados.
+  - Scrollbar moderna e estilizada para formulários.
+  - Modal customizado de confirmação para exclusão segura de registros.
+- **⚡ Deploy Automático:** Integrado à Vercel com CI/CD a cada merge na branch `main`.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## 🛠️ Tech Stack
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- **Frontend:** [React.js](https://react.dev/) + [Vite](https://vitejs.dev/)
+- **Estilização:** [Tailwind CSS](https://tailwindcss.com/) + CSS Modularizado (`@apply`)
+- **Backend / Banco de Dados:** [Firebase Firestore](https://firebase.google.com/) (NoSQL Realtime)
+- **Hospedagem & Deploy:** [Vercel](https://vercel.com/)
+- **Versionamento:** Git & GitHub (Workflows com Feature Branches e Pull Requests)
+
+---
+
+## 📁 Estrutura do Projeto
+
+```text
+assistencia-os-system/
+├── public/
+├── src/
+│   ├── components/
+│   │   └── Dashboard/
+│   │       ├── Dashboard.jsx      # Componente principal do Painel
+│   │       └── Dashboard.css      # Estilos customizados e utilitários isolados
+│   ├── services/
+│   │   └── firebase.js         # Configuração e inicialização do Firebase
+│   ├── App.jsx
+│   ├── main.jsx
+│   └── index.css              # Configuração global do Tailwind CSS
+├── .env.example                # Exemplo de variáveis de ambiente
+├── tailwind.config.js
+└── vite.config.js

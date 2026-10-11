@@ -3,7 +3,7 @@ import { db } from '../../services/firebase';
 import { collection, onSnapshot, addDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore';
 import './Dashboard.css';
 
-export default function Dashboard() {
+export default function Dashboard({ onLogout, userEmail }) {
   const [osList, setOsList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -206,13 +206,25 @@ export default function Dashboard() {
             🛠️ Assistência Técnica - Ordens de Serviço
           </h1>
           <p className="dashboard-subtitle">
-            Firebase Conectado • Painel em tempo real
+            Conectado como <strong className="text-slate-200">{userEmail}</strong>
           </p>
         </div>
         
-        <button onClick={handleOpenNewModal} className="dashboard-btn-new">
-          <span className="text-lg">+</span> Nova OS
-        </button>
+        <div className="dashboard-actions-group">
+          <button onClick={handleOpenNewModal} className="dashboard-btn-new">
+            <span className="text-lg">+</span> Nova OS
+          </button>
+          
+          {onLogout && (
+            <button
+              onClick={onLogout}
+              className="btn-logout"
+              title="Encerrar Sessão"
+            >
+              <span>🚪</span> Sair
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Filtros Rápidos */}
