@@ -404,18 +404,21 @@ export default function Dashboard({ onLogout, userEmail }) {
         </div>
       )}
 
-      {/* Modal de Novo Usuário (Restrito ao Admin) */}
+{/* Modal de Novo Usuário (Restrito ao Admin) */}
       {isUserModalOpen && (
         <div className="modal-overlay">
           <div className="modal-container max-w-md">
-            <div className="flex justify-between items-center mb-4">
+            
+            {/* Cabeçalho do Modal Alinhado */}
+            <div className="modal-header-box">
               <div>
                 <h2 className="text-xl font-bold text-white">Cadastrar Novo Técnico</h2>
-                <p className="text-slate-400 text-xs mt-0.5">Adicione um novo acesso ao sistema</p>
+                <p className="text-slate-400 text-xs mt-1">Adicione um novo acesso ao sistema</p>
               </div>
               <button
                 onClick={() => setIsUserModalOpen(false)}
-                className="text-slate-400 hover:text-white text-lg p-2 rounded-lg hover:bg-slate-800 transition cursor-pointer"
+                className="modal-close-btn"
+                title="Fechar"
               >
                 ✕
               </button>
@@ -433,7 +436,7 @@ export default function Dashboard({ onLogout, userEmail }) {
               </div>
             )}
 
-            <form onSubmit={handleCreateUser} className="flex flex-col gap-4">
+            <form onSubmit={handleCreateUser} className="flex flex-col gap-1">
               <div className="form-group">
                 <label className="form-label">E-mail do Novo Técnico</label>
                 <input
@@ -458,7 +461,7 @@ export default function Dashboard({ onLogout, userEmail }) {
                 />
               </div>
 
-              <div className="modal-actions mt-2">
+              <div className="modal-actions">
                 <button
                   type="button"
                   onClick={() => setIsUserModalOpen(false)}
