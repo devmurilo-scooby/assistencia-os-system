@@ -3,6 +3,7 @@ import { db, auth } from '../../services/firebase';
 import { collection, onSnapshot, addDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import './Dashboard.css';
+import DetalhesOS from '../DetalhesOS/DetalhesOS';
 
 export default function Dashboard({ onLogout, userEmail }) {
   const [osList, setOsList] = useState([]);
@@ -38,6 +39,31 @@ export default function Dashboard({ onLogout, userEmail }) {
   // Listas únicas para os filtros de select dos logs
   const usuariosUnicos = Array.from(new Set(logsList.map(log => log.usuario).filter(Boolean)));
   const numerosOSUnicos = Array.from(new Set(logsList.map(log => log.numeroOS).filter(Boolean))).sort((a, b) => a - b);
+
+  // Estado para controlar qual OS está aberta na tela de detalhes
+  const [osAberta, setOsAberta] = useState(null);
+
+  // 👇 ADICIONE ESSA VERIFICAÇÃO AQUI:
+  if (osAberta) {
+    return (
+      <DetalhesOS
+        os={osAberta}
+        onBack={() => setOsAberta(null)}
+        onUpdateOS={async (osAtualizada) => {
+          await updateDoc(doc(db, 'ordens_servico', osAtualizada.id), osAtualizada);
+          setOsAberta(osAtualizada);
+        }}
+      />
+    );
+  }
+
+  // Se nenhuma OS estiver aberta, o componente continua renderizando o painel normal abaixo:
+  return (
+    <div className="dashboard-wrapper">
+      {/* Cabeçalho do Dashboard, Filtros, Cards, etc... */}
+    </div>
+  );
+}
 
   // Função para aplicar máscara de telefone automático: (XX) XXXXX-XXXX
   const formatPhone = (value) => {
@@ -450,9 +476,12 @@ export default function Dashboard({ onLogout, userEmail }) {
 
                 <div className="os-footer">
                   <span>Previsão: <strong className="text-slate-200">{formatDateTimeBR(os.previsao)}</strong></span>
-                  <span className="text-blue-400 font-semibold flex items-center gap-1 cursor-pointer hover:underline">
-                    Abrir OS →
-                  </span>
+                <span 
+                  onClick={(e) => { e.stopPropagation(); setOsAberta(os); }}
+                  className="text-blue-400 font-semibold flex items-center gap-1 cursor-pointer hover:underline"
+                >
+                  Abrir OS →
+                </span>
                 </div>
               </div>
             </div>
