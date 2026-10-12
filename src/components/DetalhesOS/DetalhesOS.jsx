@@ -175,76 +175,89 @@ export default function DetalhesOS({ os, onBack, onUpdateOS }) {
       {/* 4. Conteúdo Dinâmico */}
       <div className="os-page-content">
         
-        {/* ABA RESUMO EM CARDS LIMPOS */}
+{/* ABA RESUMO EM CARDS LIMPOS E PROFISSIONAIS */}
         {abaAtiva === 'resumo' && (
           <div className="resumo-grid">
             
-            {/* Card 1: Checklist / Defeitos Iniciais */}
+            {/* Card 1: Checklist & Defeitos Iniciais */}
             <div className="resumo-card">
-              <div>
+              <div className="flex flex-col gap-4">
                 <h3 className="resumo-card-title">
-                  <span>⚠️</span> Checklist & Defeitos Iniciais
+                  <span>⚠️</span> Defeito & Checklist Inicial
                 </h3>
-                <p className="text-slate-300 bg-slate-950 p-4 rounded-xl border border-slate-800 text-xs leading-relaxed mb-4">
-                  {os.defeito || 'Nenhum defeito detalhado inicialmente.'}
-                </p>
+                
+                <div className="flex flex-col gap-1.5">
+                  <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Descrição do Problema:</span>
+                  <p className="text-slate-100 bg-slate-950 p-3.5 rounded-xl border border-slate-800 text-xs leading-relaxed">
+                    {os.defeito || 'Nenhum defeito detalhado inicialmente.'}
+                  </p>
+                </div>
               </div>
-              <div className="text-[11px] text-slate-400 bg-slate-950/50 p-3 rounded-xl border border-slate-800/80">
-                <span>Entrada: </span>
+
+              <div className="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs">
+                <span className="text-slate-400 font-medium">Data de Entrada:</span>
                 <strong className="text-slate-200">{formatDateTimeBR(os.dataEntrada)}</strong>
               </div>
             </div>
 
             {/* Card 2: Tempos Registrados */}
             <div className="resumo-card">
-              <div>
+              <div className="flex flex-col gap-4">
                 <h3 className="resumo-card-title">
-                  <span>⏱️</span> Tempos Registrados
+                  <span>⏱️</span> Tempos de Execução
                 </h3>
-                <div className="bg-slate-950 rounded-xl border border-slate-800 overflow-hidden mb-4">
+
+                <div className="bg-slate-950 rounded-xl border border-slate-800 overflow-hidden">
                   <table className="w-full text-left text-xs">
                     <thead>
-                      <tr className="bg-slate-900 text-slate-400 border-b border-slate-800">
-                        <th className="p-2.5">Atividade</th>
-                        <th className="p-2.5 text-right">Duração</th>
+                      <tr className="bg-slate-900/80 text-slate-400 border-b border-slate-800">
+                        <th className="p-3 font-semibold">Atividade</th>
+                        <th className="p-3 font-semibold text-right">Duração</th>
                       </tr>
                     </thead>
                     <tbody>
                       <tr>
-                        <td className="p-2.5 text-slate-300">Nenhum tempo registrado</td>
-                        <td className="p-2.5 text-right text-slate-500">00:00</td>
+                        <td className="p-3 text-slate-400 italic" colSpan="2">Nenhum tempo registrado até o momento.</td>
                       </tr>
                     </tbody>
                   </table>
                 </div>
               </div>
-              <div className="flex justify-between items-center bg-slate-950/50 p-3 rounded-xl border border-slate-800/80 text-xs">
-                <span className="text-slate-400">Total até o momento:</span>
-                <strong className="text-white font-mono">00:00:00</strong>
+
+              <div className="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs">
+                <span className="text-slate-400 font-medium">Total acumulado:</span>
+                <strong className="text-white font-mono bg-slate-950 px-2.5 py-1 rounded-lg border border-slate-800">00:00:00</strong>
               </div>
             </div>
 
-            {/* Card 3: Comentários e Serviços */}
+            {/* Card 3: Serviços e Comentários */}
             <div className="resumo-card">
-              <div>
+              <div className="flex flex-col gap-4">
                 <h3 className="resumo-card-title">
-                  <span>💬</span> Serviços & Comentários
+                  <span>💬</span> Serviços & Valores
                 </h3>
-                {os.servicosPreAprovados?.length > 0 ? (
-                  <div className="space-y-2 mb-4">
-                    {os.servicosPreAprovados.map((s, idx) => (
-                      <div key={idx} className="flex justify-between items-center bg-slate-950 p-3 rounded-xl border border-slate-800 text-xs">
-                        <span className="text-white font-medium">{s.nome}</span>
-                        <span className="text-emerald-400 font-bold">R$ {Number(s.valor || 0).toFixed(2)}</span>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="text-xs text-slate-400 bg-slate-950 p-3 rounded-xl border border-slate-800 mb-4">Nenhum serviço registrado.</p>
-                )}
+
+                <div className="flex flex-col gap-1.5">
+                  <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Serviços Pré-Aprovados:</span>
+                  {os.servicosPreAprovados?.length > 0 ? (
+                    <div className="space-y-2 max-h-36 overflow-y-auto pr-1">
+                      {os.servicosPreAprovados.map((s, idx) => (
+                        <div key={idx} className="flex justify-between items-center bg-slate-950 p-3 rounded-xl border border-slate-800 text-xs">
+                          <span className="text-slate-200 font-medium">{s.nome}</span>
+                          <span className="text-emerald-400 font-bold shrink-0 ml-2">
+                            R$ {Number(s.valor || 0).toFixed(2).replace('.', ',')}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-xs text-slate-400 bg-slate-950 p-3.5 rounded-xl border border-slate-800">Nenhum serviço cadastrado.</p>
+                  )}
+                </div>
               </div>
-              <div className="text-[11px] text-slate-400 bg-slate-950/50 p-3 rounded-xl border border-slate-800/80">
-                <span>Previsão: </span>
+
+              <div className="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs">
+                <span className="text-slate-400 font-medium">Previsão:</span>
                 <strong className="text-slate-200">{formatDateTimeBR(os.previsao)}</strong>
               </div>
             </div>
