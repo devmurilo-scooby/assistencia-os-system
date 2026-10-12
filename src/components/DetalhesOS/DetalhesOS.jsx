@@ -349,12 +349,12 @@ export default function DetalhesOS({ os, onBack, onUpdateOS }) {
             <span>✕</span> Fechar
           </button>
 
-          <div className="flex items-center gap-2.5 bg-slate-950 px-3.5 py-2 rounded-xl border border-slate-800">
+            <div className="flex items-center gap-2.5 bg-slate-950 px-3.5 py-2 rounded-xl border border-slate-800">
             <span className="text-xs font-bold text-slate-400 uppercase tracking-wide">Status:</span>
             <select
               value={statusOS}
               onChange={(e) => setStatusOS(e.target.value)}
-              className="bg-slate-900 text-xs font-semibold text-blue-400 px-3 py-1.5 rounded-lg border border-slate-700 focus:outline-none focus:border-blue-500 cursor-pointer"
+              className="os-status-select"
             >
               <option value="Aguardando">Aguardando</option>
               <option value="Em Andamento">Em Andamento</option>
