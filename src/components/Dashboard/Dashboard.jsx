@@ -46,6 +46,34 @@ export default function Dashboard({ onLogout, userEmail }) {
     return `${day}/${month}/${year} - ${hours}:${minutes}`;
   };
 
+  // Função auxiliar para gravar histórico na coleção "logs"
+  const registrarLog = async (acao, numOS) => {
+    try {
+      const agora = new Date();
+      const dia = String(agora.getDate()).padStart(2, '0');
+      const mes = String(agora.getMonth() + 1).padStart(2, '0');
+      const ano = agora.getFullYear();
+      const horas = String(agora.getHours()).padStart(2, '0');
+      const minutos = String(agora.getMinutes()).padStart(2, '0');
+
+      const dataFormatada = `${dia}/${mes}/${ano} - ${horas}:${minutos}`;
+      const usuarioLogado = userEmail || 'Usuário desconhecido';
+
+      const mensagemLog = `usuario ${usuarioLogado} ${acao} a os ${numOS} na data ${dataFormatada}`;
+
+      await addDoc(collection(db, 'logs'), {
+        mensagem: mensagemLog,
+        usuario: usuarioLogado,
+        acao: acao,
+        numeroOS: numOS,
+        dataFormatted: dataFormatada,
+        createdAt: new Date()
+      });
+    } catch (error) {
+      console.error("Erro ao registrar log no Firebase: ", error);
+    }
+  };
+
   const getDefaultDateTimeLocal = () => {
     const now = new Date();
     now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
@@ -133,11 +161,16 @@ export default function Dashboard({ onLogout, userEmail }) {
     setDeleteModalOpen(true);
   };
 
-  const handleConfirmDelete = async () => {
+const handleConfirmDelete = async () => {
     if (!osToDelete) return;
     setExcluindo(true);
     try {
+      const numOSExcluida = osToDelete.numeroOS;
       await deleteDoc(doc(db, 'ordens_servico', osToDelete.id));
+      
+      // Grava o Log de Exclusão
+      await registrarLog('excluiu', numOSExcluida);
+
       setDeleteModalOpen(false);
       setOsToDelete(null);
     } catch (error) {
@@ -178,7 +211,7 @@ export default function Dashboard({ onLogout, userEmail }) {
     }
   };
 
-  const handleSubmitOS = async (e) => {
+const handleSubmitOS = async (e) => {
     e.preventDefault();
     if (!numeroOS || !nomeCliente || !defeito) {
       alert('Por favor, preencha os campos obrigatórios (Número da OS, Cliente e Defeito).');
@@ -196,16 +229,23 @@ export default function Dashboard({ onLogout, userEmail }) {
         servicosPreAprovados: servicosPreAprovados.filter(s => s.nome.trim() !== ''),
         dataEntrada,
         previsao: dataPrevisao || 'Não informada',
+        // Adiciona dados de autoria na própria OS
+        createdBy: editingId ? undefined : userEmail,
+        updatedBy: userEmail,
       };
 
       if (editingId) {
         await updateDoc(doc(db, 'ordens_servico', editingId), dadosOS);
+        // Grava o Log de Edição
+        await registrarLog('editou', numeroOS);
       } else {
         await addDoc(collection(db, 'ordens_servico'), {
           ...dadosOS,
           status: 'Aguardando',
           createdAt: new Date()
         });
+        // Grava o Log de Criação
+        await registrarLog('criou', numeroOS);
       }
 
       setIsModalOpen(false);
