@@ -253,7 +253,7 @@ export default function Dashboard({ onLogout, userEmail }) {
           {userEmail === 'scoobydevmurilo@gmail.com' && (
             <button
               onClick={() => { setIsUserModalOpen(true); setUserError(''); setUserSuccess(''); }}
-              className="bg-slate-800 hover:bg-slate-700 text-blue-400 border border-slate-700 px-4 py-2.5 rounded-xl font-semibold text-sm transition cursor-pointer flex items-center gap-2 shadow-sm"
+              className="btn-user-add"
               title="Cadastrar novo técnico"
             >
               <span>👤+</span> Novo Usuário
