@@ -141,7 +141,7 @@ export default function Dashboard({ onLogout, userEmail }) {
     setIsModalOpen(true);
   };
 
-  const handleOpenEditModal = (os, e) => {
+const handleOpenEditModal = (os, e) => {
     e.stopPropagation();
     setEditingId(os.id);
     setNumeroOS(os.numeroOS || '');
@@ -151,7 +151,8 @@ export default function Dashboard({ onLogout, userEmail }) {
     setDefeito(os.defeito || '');
     setServicosPreAprovados(os.servicosPreAprovados?.length > 0 ? os.servicosPreAprovados : [{ nome: '', valor: '' }]);
     setDataEntrada(os.dataEntrada || getDefaultDateTimeLocal());
-    setDataPrevisao(os.previsao || '');
+    // Se for "Não informada" ou vazio, define como string vazia para o input datetime-local aceitar
+    setDataPrevisao(os.previsao && os.previsao !== 'Não informada' ? os.previsao : '');
     setIsModalOpen(true);
   };
 
@@ -229,22 +230,21 @@ const handleSubmitOS = async (e) => {
         servicosPreAprovados: servicosPreAprovados.filter(s => s.nome.trim() !== ''),
         dataEntrada,
         previsao: dataPrevisao || 'Não informada',
-        // Adiciona dados de autoria na própria OS
-        createdBy: editingId ? undefined : userEmail,
         updatedBy: userEmail,
       };
 
       if (editingId) {
+        // Na edição, atualizamos os dados sem mexer no createdBy original
         await updateDoc(doc(db, 'ordens_servico', editingId), dadosOS);
-        // Grava o Log de Edição
         await registrarLog('editou', numeroOS);
       } else {
+        // Na criação, adicionamos o createdBy explicitamente
         await addDoc(collection(db, 'ordens_servico'), {
           ...dadosOS,
+          createdBy: userEmail,
           status: 'Aguardando',
           createdAt: new Date()
         });
-        // Grava o Log de Criação
         await registrarLog('criou', numeroOS);
       }
 
