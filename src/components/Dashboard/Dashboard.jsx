@@ -42,29 +42,7 @@ export default function Dashboard({ onLogout, userEmail }) {
 
   // Estado para controlar qual OS está aberta na tela de detalhes
   const [osAberta, setOsAberta] = useState(null);
-
-  // 👇 ADICIONE ESSA VERIFICAÇÃO AQUI:
-  if (osAberta) {
-    return (
-      <DetalhesOS
-        os={osAberta}
-        onBack={() => setOsAberta(null)}
-        onUpdateOS={async (osAtualizada) => {
-          await updateDoc(doc(db, 'ordens_servico', osAtualizada.id), osAtualizada);
-          setOsAberta(osAtualizada);
-        }}
-      />
-    );
-  }
-
-  // Se nenhuma OS estiver aberta, o componente continua renderizando o painel normal abaixo:
-  return (
-    <div className="dashboard-wrapper">
-      {/* Cabeçalho do Dashboard, Filtros, Cards, etc... */}
-    </div>
-  );
-}
-
+  
   // Função para aplicar máscara de telefone automático: (XX) XXXXX-XXXX
   const formatPhone = (value) => {
     if (!value) return '';
@@ -337,6 +315,19 @@ export default function Dashboard({ onLogout, userEmail }) {
     if (s.includes('andamento')) return 'os-badge-status-emerald';
     return 'os-badge-status-purple';
   };
+
+  if (osAberta) {
+      return (
+        <DetalhesOS
+          os={osAberta}
+          onBack={() => setOsAberta(null)}
+          onUpdateOS={async (osAtualizada) => {
+            await updateDoc(doc(db, 'ordens_servico', osAtualizada.id), osAtualizada);
+            setOsAberta(osAtualizada);
+          }}
+        />
+      );
+    }
 
   return (
     <div className="dashboard-wrapper">
