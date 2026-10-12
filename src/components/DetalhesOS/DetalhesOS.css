@@ -132,3 +132,12 @@
 .os-status-select option {
   @apply bg-slate-900 text-white py-2;
 }
+
+/* Container esquerdo do rodapé (Fechar + Status) */
+.os-footer-left-group {
+  @apply flex items-center gap-4 flex-wrap;
+}
+
+.os-status-container {
+  @apply flex items-center gap-2.5 bg-slate-950 px-3.5 py-2 rounded-xl border border-slate-800 shrink-0;
+}

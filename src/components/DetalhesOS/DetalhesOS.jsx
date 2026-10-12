@@ -341,15 +341,15 @@ export default function DetalhesOS({ os, onBack, onUpdateOS }) {
 
       </div>
 
-      {/* 5. BARRA DE RODAPÉ FIXA GLOBAL COM SELETOR CORRIGIDO */}
+{/* 5. BARRA DE RODAPÉ FIXA GLOBAL COM ALINHAMENTO PERFEITO */}
       <div className="os-fixed-footer-bar">
         
-        <div className="flex items-center gap-4">
+        <div className="os-footer-left-group">
           <button onClick={onBack} className="btn-os-action">
             <span>✕</span> Fechar
           </button>
 
-            <div className="flex items-center gap-2.5 bg-slate-950 px-3.5 py-2 rounded-xl border border-slate-800">
+          <div className="os-status-container">
             <span className="text-xs font-bold text-slate-400 uppercase tracking-wide">Status:</span>
             <select
               value={statusOS}
