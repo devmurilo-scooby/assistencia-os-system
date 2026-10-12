@@ -482,145 +482,163 @@ export default function Dashboard({ onLogout, userEmail }) {
         </div>
       )}
 
-      {/* Modal de Criação / Edição de OS */}
+{/* Modal de Criação / Edição de OS */}
       {isModalOpen && (
         <div className="modal-overlay">
-          <div className="modal-container">
-            <h2 className="text-xl font-bold text-white mb-1">
-              {editingId ? 'Editar Ordem de Serviço' : 'Nova Ordem de Serviço'}
-            </h2>
-            <p className="text-slate-400 text-sm mb-6">
-              {editingId ? 'Altere as informações necessárias da OS.' : 'Preencha as informações iniciais para registrar o aparelho.'}
-            </p>
+          <div className="modal-container-fixed">
             
-            <form onSubmit={handleSubmitOS}>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="form-group">
-                  <label className="form-label">Número da OS *</label>
-                  <input
-                    type="text"
-                    required
-                    value={numeroOS}
-                    onChange={(e) => setNumeroOS(e.target.value)}
-                    placeholder="Ex: 1025"
-                    className="form-input"
-                  />
+            {/* 1. Header Fixo */}
+            <div className="modal-fixed-header">
+              <div>
+                <h2 className="text-xl font-bold text-white">
+                  {editingId ? 'Editar Ordem de Serviço' : 'Nova Ordem de Serviço'}
+                </h2>
+                <p className="text-slate-400 text-xs mt-1">
+                  {editingId ? 'Altere as informações necessárias da OS.' : 'Preencha as informações iniciais para registrar o aparelho.'}
+                </p>
+              </div>
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="modal-close-btn"
+                title="Fechar"
+              >
+                ✕
+              </button>
+            </div>
+            
+            <form onSubmit={handleSubmitOS} className="modal-form-wrapper">
+              
+              {/* 2. Conteúdo com Scroll Interno */}
+              <div className="modal-fixed-body">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="form-group">
+                    <label className="form-label">Número da OS *</label>
+                    <input
+                      type="text"
+                      required
+                      value={numeroOS}
+                      onChange={(e) => setNumeroOS(e.target.value)}
+                      placeholder="Ex: 1025"
+                      className="form-input"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">Tipo de Aparelho</label>
+                    <select
+                      value={tipoAparelho}
+                      onChange={(e) => setTipoAparelho(e.target.value)}
+                      className="form-input"
+                    >
+                      <option value="notebook">Notebook</option>
+                      <option value="desktop">Desktop</option>
+                    </select>
+                  </div>
                 </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="form-group">
+                    <label className="form-label">Nome do Cliente *</label>
+                    <input
+                      type="text"
+                      required
+                      value={nomeCliente}
+                      onChange={(e) => setNomeCliente(e.target.value)}
+                      placeholder="Ex: João da Silva"
+                      className="form-input"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">Contato do Cliente</label>
+                    <input
+                      type="text"
+                      value={contato}
+                      onChange={handleContatoChange}
+                      placeholder="(43) 99999-9999"
+                      maxLength={15}
+                      className="form-input"
+                    />
+                  </div>
+                </div>
+
                 <div className="form-group">
-                  <label className="form-label">Tipo de Aparelho</label>
-                  <select
-                    value={tipoAparelho}
-                    onChange={(e) => setTipoAparelho(e.target.value)}
+                  <label className="form-label">Defeito Apresentado *</label>
+                  <textarea
+                    required
+                    rows="3"
+                    value={defeito}
+                    onChange={(e) => setDefeito(e.target.value)}
+                    placeholder="Descreva o problema relatado..."
                     className="form-input"
+                  ></textarea>
+                </div>
+
+                {/* Serviços Pré-Aprovados */}
+                <div className="form-group">
+                  <label className="form-label mb-2">Serviços Pré-Aprovados e Valores</label>
+                  <div className="space-y-3">
+                    {servicosPreAprovados.map((servico, index) => (
+                      <div key={index} className="servico-row">
+                        <input
+                          type="text"
+                          value={servico.nome}
+                          onChange={(e) => handleServicoChange(index, 'nome', e.target.value)}
+                          placeholder="Nome do serviço (Ex: Limpeza)"
+                          className="form-input flex-1"
+                        />
+                        <input
+                          type="number"
+                          step="0.01"
+                          value={servico.valor}
+                          onChange={(e) => handleServicoChange(index, 'valor', e.target.value)}
+                          placeholder="Valor (R$)"
+                          className="form-input w-36"
+                        />
+                        {servicosPreAprovados.length > 1 && (
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveServicoRow(index)}
+                            className="bg-slate-800 hover:bg-red-500/20 text-red-400 px-3.5 py-3 rounded-xl border border-slate-700 transition cursor-pointer text-sm"
+                          >
+                            ✕
+                          </button>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleAddServicoRow}
+                    className="mt-2 bg-slate-800 hover:bg-slate-700 text-blue-400 text-xs font-semibold px-4 py-2.5 rounded-xl border border-slate-700 transition cursor-pointer flex items-center gap-1.5"
                   >
-                    <option value="notebook">Notebook</option>
-                    <option value="desktop">Desktop</option>
-                  </select>
+                    <span>+</span> Adicionar Nova Linha de Serviço
+                  </button>
+                </div>
+
+                {/* Datas */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="form-group">
+                    <label className="form-label">Data e Hora de Entrada</label>
+                    <input
+                      type="datetime-local"
+                      value={dataEntrada}
+                      onChange={(e) => setDataEntrada(e.target.value)}
+                      className="form-input"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">Data e Hora Prevista</label>
+                    <input
+                      type="datetime-local"
+                      value={dataPrevisao}
+                      onChange={(e) => setDataPrevisao(e.target.value)}
+                      className="form-input"
+                    />
+                  </div>
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="form-group">
-                  <label className="form-label">Nome do Cliente *</label>
-                  <input
-                    type="text"
-                    required
-                    value={nomeCliente}
-                    onChange={(e) => setNomeCliente(e.target.value)}
-                    placeholder="Ex: João da Silva"
-                    className="form-input"
-                  />
-                </div>
-                <div className="form-group">
-                  <label className="form-label">Contato do Cliente</label>
-                  <input
-                    type="text"
-                    value={contato}
-                    onChange={handleContatoChange}
-                    placeholder="(43) 99999-9999"
-                    maxLength={15}
-                    className="form-input"
-                  />
-                </div>
-              </div>
-
-              <div className="form-group">
-                <label className="form-label">Defeito Apresentado *</label>
-                <textarea
-                  required
-                  rows="3"
-                  value={defeito}
-                  onChange={(e) => setDefeito(e.target.value)}
-                  placeholder="Descreva o problema relatado..."
-                  className="form-input"
-                ></textarea>
-              </div>
-
-              {/* Serviços Pré-Aprovados */}
-              <div className="form-group">
-                <label className="form-label mb-2">Serviços Pré-Aprovados e Valores</label>
-                <div className="space-y-3">
-                  {servicosPreAprovados.map((servico, index) => (
-                    <div key={index} className="servico-row">
-                      <input
-                        type="text"
-                        value={servico.nome}
-                        onChange={(e) => handleServicoChange(index, 'nome', e.target.value)}
-                        placeholder="Nome do serviço (Ex: Limpeza)"
-                        className="form-input flex-1"
-                      />
-                      <input
-                        type="number"
-                        step="0.01"
-                        value={servico.valor}
-                        onChange={(e) => handleServicoChange(index, 'valor', e.target.value)}
-                        placeholder="Valor (R$)"
-                        className="form-input w-36"
-                      />
-                      {servicosPreAprovados.length > 1 && (
-                        <button
-                          type="button"
-                          onClick={() => handleRemoveServicoRow(index)}
-                          className="bg-slate-800 hover:bg-red-500/20 text-red-400 px-3.5 py-3 rounded-xl border border-slate-700 transition cursor-pointer text-sm"
-                        >
-                          ✕
-                        </button>
-                      )}
-                    </div>
-                  ))}
-                </div>
-                <button
-                  type="button"
-                  onClick={handleAddServicoRow}
-                  className="mt-2 bg-slate-800 hover:bg-slate-700 text-blue-400 text-xs font-semibold px-4 py-2.5 rounded-xl border border-slate-700 transition cursor-pointer flex items-center gap-1.5"
-                >
-                  <span>+</span> Adicionar Nova Linha de Serviço
-                </button>
-              </div>
-
-              {/* Datas */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="form-group">
-                  <label className="form-label">Data e Hora de Entrada</label>
-                  <input
-                    type="datetime-local"
-                    value={dataEntrada}
-                    onChange={(e) => setDataEntrada(e.target.value)}
-                    className="form-input"
-                  />
-                </div>
-                <div className="form-group">
-                  <label className="form-label">Data e Hora Prevista</label>
-                  <input
-                    type="datetime-local"
-                    value={dataPrevisao}
-                    onChange={(e) => setDataPrevisao(e.target.value)}
-                    className="form-input"
-                  />
-                </div>
-              </div>
-
-              <div className="modal-actions">
+              {/* 3. Rodapé Fixo */}
+              <div className="modal-fixed-footer">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
@@ -636,6 +654,7 @@ export default function Dashboard({ onLogout, userEmail }) {
                   {salvando ? 'Salvando...' : (editingId ? 'Salvar Alterações' : 'Cadastrar OS')}
                 </button>
               </div>
+
             </form>
           </div>
         </div>
