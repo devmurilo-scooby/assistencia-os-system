@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { db } from '../../services/firebase';
+import { db, auth } from '../../services/firebase';
 import { collection, onSnapshot, addDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
 import './Dashboard.css';
 
 export default function Dashboard({ onLogout, userEmail }) {
@@ -9,6 +10,14 @@ export default function Dashboard({ onLogout, userEmail }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [filtroStatus, setFiltroStatus] = useState('todos');
   const [editingId, setEditingId] = useState(null);
+
+  // Estados para o Modal de Novo Usuário
+  const [isUserModalOpen, setIsUserModalOpen] = useState(false);
+  const [novoEmail, setNovoEmail] = useState('');
+  const [novaSenha, setNovaSenha] = useState('');
+  const [userError, setUserError] = useState('');
+  const [userSuccess, setUserSuccess] = useState('');
+  const [criandoUsuario, setCriandoUsuario] = useState(false);
 
   // Estado para o Modal de Confirmação de Exclusão
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -43,7 +52,7 @@ export default function Dashboard({ onLogout, userEmail }) {
     return now.toISOString().slice(0, 16);
   };
 
-  // Estados do Formulário
+  // Estados do Formulário de OS
   const [numeroOS, setNumeroOS] = useState('');
   const [nomeCliente, setNomeCliente] = useState('');
   const [contato, setContato] = useState('');
@@ -118,14 +127,12 @@ export default function Dashboard({ onLogout, userEmail }) {
     setIsModalOpen(true);
   };
 
-  // Abrir Modal de Confirmação de Exclusão Customizado
   const handleOpenDeleteModal = (os, e) => {
     e.stopPropagation();
     setOsToDelete(os);
     setDeleteModalOpen(true);
   };
 
-  // Confirmar Exclusão no Firebase
   const handleConfirmDelete = async () => {
     if (!osToDelete) return;
     setExcluindo(true);
@@ -138,6 +145,36 @@ export default function Dashboard({ onLogout, userEmail }) {
       alert("Erro ao excluir OS no Firebase.");
     } finally {
       setExcluindo(false);
+    }
+  };
+
+  // Função para cadastrar novo usuário (Apenas Admin)
+  const handleCreateUser = async (e) => {
+    e.preventDefault();
+    setUserError('');
+    setUserSuccess('');
+    setCriandoUsuario(true);
+
+    try {
+      await createUserWithEmailAndPassword(auth, novoEmail, novaSenha);
+      setUserSuccess('Usuário cadastrado com sucesso!');
+      setNovoEmail('');
+      setNovaSenha('');
+      setTimeout(() => {
+        setIsUserModalOpen(false);
+        setUserSuccess('');
+      }, 2000);
+    } catch (err) {
+      console.error("Erro ao criar usuário: ", err);
+      if (err.code === 'auth/email-already-in-use') {
+        setUserError('Este e-mail já está cadastrado.');
+      } else if (err.code === 'auth/weak-password') {
+        setUserError('A senha deve ter pelo menos 6 caracteres.');
+      } else {
+        setUserError('Erro ao cadastrar usuário. Tente novamente.');
+      }
+    } finally {
+      setCriandoUsuario(false);
     }
   };
 
@@ -211,6 +248,18 @@ export default function Dashboard({ onLogout, userEmail }) {
         </div>
         
         <div className="dashboard-actions-group">
+          
+          {/* Botão de Novo Usuário (Visível apenas para o seu e-mail) */}
+          {userEmail === 'scoobydevmurilo@gmail.com' && (
+            <button
+              onClick={() => { setIsUserModalOpen(true); setUserError(''); setUserSuccess(''); }}
+              className="bg-slate-800 hover:bg-slate-700 text-blue-400 border border-slate-700 px-4 py-2.5 rounded-xl font-semibold text-sm transition cursor-pointer flex items-center gap-2 shadow-sm"
+              title="Cadastrar novo técnico"
+            >
+              <span>👤+</span> Novo Usuário
+            </button>
+          )}
+
           <button onClick={handleOpenNewModal} className="dashboard-btn-new">
             <span className="text-lg">+</span> Nova OS
           </button>
@@ -321,7 +370,7 @@ export default function Dashboard({ onLogout, userEmail }) {
         </div>
       )}
 
-{/* Modal de Confirmação de Exclusão (Customizado) */}
+      {/* Modal de Confirmação de Exclusão */}
       {deleteModalOpen && osToDelete && (
         <div className="modal-overlay">
           <div className="modal-confirm-container">
@@ -351,6 +400,81 @@ export default function Dashboard({ onLogout, userEmail }) {
                 {excluindo ? 'Excluindo...' : 'Sim, Excluir'}
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Novo Usuário (Restrito ao Admin) */}
+      {isUserModalOpen && (
+        <div className="modal-overlay">
+          <div className="modal-container max-w-md">
+            <div className="flex justify-between items-center mb-4">
+              <div>
+                <h2 className="text-xl font-bold text-white">Cadastrar Novo Técnico</h2>
+                <p className="text-slate-400 text-xs mt-0.5">Adicione um novo acesso ao sistema</p>
+              </div>
+              <button
+                onClick={() => setIsUserModalOpen(false)}
+                className="text-slate-400 hover:text-white text-lg p-2 rounded-lg hover:bg-slate-800 transition cursor-pointer"
+              >
+                ✕
+              </button>
+            </div>
+
+            {userError && (
+              <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-medium p-3.5 rounded-xl text-center mb-4">
+                {userError}
+              </div>
+            )}
+
+            {userSuccess && (
+              <div className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-medium p-3.5 rounded-xl text-center mb-4">
+                {userSuccess}
+              </div>
+            )}
+
+            <form onSubmit={handleCreateUser} className="flex flex-col gap-4">
+              <div className="form-group">
+                <label className="form-label">E-mail do Novo Técnico</label>
+                <input
+                  type="email"
+                  required
+                  value={novoEmail}
+                  onChange={(e) => setNovoEmail(e.target.value)}
+                  placeholder="tecnico2@assistencia.com"
+                  className="form-input"
+                />
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Senha Temporária</label>
+                <input
+                  type="password"
+                  required
+                  value={novaSenha}
+                  onChange={(e) => setNovaSenha(e.target.value)}
+                  placeholder="Mínimo de 6 caracteres"
+                  className="form-input"
+                />
+              </div>
+
+              <div className="modal-actions mt-2">
+                <button
+                  type="button"
+                  onClick={() => setIsUserModalOpen(false)}
+                  className="btn-secondary"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  disabled={criandoUsuario}
+                  className="btn-primary"
+                >
+                  {criandoUsuario ? 'Cadastrando...' : 'Criar Usuário'}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
