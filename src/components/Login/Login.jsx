@@ -126,7 +126,7 @@ export default function Login() {
             </div>
 
             <div className="login-form-group">
-              <div className="flex justify-between items-center mb-1">
+              <div className="login-senha-header">
                 <label className="login-label">Senha</label>
                 <button
                   type="button"

@@ -4,6 +4,7 @@
   @apply min-h-screen bg-slate-950 text-slate-100 p-6 md:p-8 w-full box-border;
 }
 
+/* Cabeçalho do Dashboard */
 .dashboard-header {
   @apply flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8 bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl;
 }
@@ -16,10 +17,24 @@
   @apply text-slate-400 text-sm mt-1;
 }
 
-.dashboard-btn-new {
-  @apply bg-blue-600 hover:bg-blue-500 text-white px-5 py-2.5 rounded-xl font-semibold transition shadow-md hover:shadow-blue-500/20 flex items-center gap-2 cursor-pointer;
+.dashboard-actions-group {
+  @apply flex items-center gap-3 w-full md:w-auto justify-end flex-wrap;
 }
 
+.dashboard-btn-new {
+  @apply bg-blue-600 hover:bg-blue-500 text-white px-5 py-2.5 rounded-xl font-semibold text-sm transition shadow-md shadow-blue-600/20 flex items-center gap-2 cursor-pointer border border-blue-500/50;
+}
+
+/* Botão de Adicionar Usuário no Cabeçalho */
+.btn-user-add {
+  @apply bg-slate-800 hover:bg-blue-600/10 text-blue-400 hover:text-blue-300 border border-slate-700/80 hover:border-blue-500/30 px-4 py-2.5 rounded-xl font-semibold text-sm transition cursor-pointer flex items-center gap-2 shadow-sm;
+}
+
+.btn-logout {
+  @apply bg-slate-800 hover:bg-red-500/10 text-slate-300 hover:text-red-400 border border-slate-700/80 hover:border-red-500/30 px-4 py-2.5 rounded-xl font-semibold text-sm transition cursor-pointer flex items-center gap-2 shadow-sm;
+}
+
+/* Filtros Rápidos */
 .dashboard-filters {
   @apply flex flex-wrap gap-2 mb-8;
 }
@@ -29,14 +44,14 @@
 }
 
 .filter-btn-active {
-  @apply bg-blue-600 text-white shadow-md border-blue-500;
+  @apply bg-blue-600 text-white shadow-md border-blue-500 font-semibold;
 }
 
 .filter-btn-inactive {
   @apply bg-slate-900 text-slate-400 hover:bg-slate-800 border-slate-800;
 }
 
-/* Card do Estado Vazio (Empty State) Estilizado e Centralizado */
+/* Card do Estado Vazio (Empty State) */
 .empty-state-card {
   @apply bg-slate-900 border border-slate-800 rounded-2xl p-10 text-center max-w-lg mx-auto my-12 shadow-xl flex flex-col items-center justify-center gap-3;
 }
@@ -45,9 +60,9 @@
   @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6;
 }
 
-/* Card da OS no Grid */
+/* Cards de OS */
 .os-card {
-  @apply bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl hover:border-blue-500/50 transition-all duration-200 flex flex-col justify-between gap-4;
+  @apply bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl hover:border-blue-500/40 transition-all duration-200 flex flex-col justify-between gap-4;
 }
 
 .os-card-header {
@@ -98,22 +113,31 @@
   @apply flex justify-between items-center text-xs text-slate-400 pt-3 border-t border-slate-800;
 }
 
-/* Modais (Formulário e Confirmação) */
+/* Modais (Formulário, Confirmação e Novo Usuário) */
 .modal-overlay {
-  @apply fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50 overflow-y-auto;
+  @apply fixed inset-0 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 z-50 overflow-y-auto;
 }
 
 .modal-container {
-  @apply bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-2xl p-6 md:p-8 shadow-2xl my-8 max-h-[85vh] overflow-y-auto pr-4;
+  @apply bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-2xl p-6 md:p-8 shadow-2xl my-8 max-h-[85vh] overflow-y-auto pr-4;
+}
+
+.modal-header-box {
+  @apply flex justify-between items-start mb-6;
+}
+
+.modal-close-btn {
+  @apply text-slate-400 hover:text-white text-base w-8 h-8 rounded-xl bg-slate-800/50 hover:bg-slate-800 border border-slate-700/50 flex items-center justify-center transition cursor-pointer shrink-0;
 }
 
 .modal-confirm-container {
-  @apply bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 md:p-8 shadow-2xl text-center flex flex-col items-center gap-6;
+  @apply bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-md p-6 md:p-8 shadow-2xl text-center flex flex-col items-center gap-6;
 }
 
 .modal-confirm-actions {
   @apply flex items-center justify-center gap-4 w-full pt-2;
 }
+
 /* Scrollbar Customizada Escura */
 .modal-container::-webkit-scrollbar {
   width: 8px;
@@ -143,7 +167,7 @@
 }
 
 .form-input {
-  @apply w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500 transition box-border;
+  @apply w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 transition box-border;
 }
 
 .servico-row {
@@ -151,11 +175,11 @@
 }
 
 .modal-actions {
-  @apply flex items-center justify-end gap-4 pt-6 mt-6 border-t border-slate-800;
+  @apply flex items-center justify-end gap-3 pt-6 mt-6 border-t border-slate-800;
 }
 
 .btn-secondary {
-  @apply bg-slate-800 hover:bg-slate-700 text-white px-5 py-2.5 rounded-xl text-sm font-medium transition cursor-pointer border border-slate-700;
+  @apply bg-slate-800 hover:bg-slate-700 text-slate-200 px-5 py-2.5 rounded-xl text-sm font-semibold transition cursor-pointer border border-slate-700;
 }
 
 .btn-primary {
@@ -166,11 +190,79 @@
   @apply bg-red-600 hover:bg-red-500 text-white px-6 py-2.5 rounded-xl text-sm font-semibold transition cursor-pointer shadow-lg shadow-red-600/20;
 }
 
-/* Botão de Logout no Cabeçalho */
-.dashboard-actions-group {
-  @apply flex items-center gap-3 w-full md:w-auto justify-end;
+
+/* Container do Modal Fixo */
+.modal-container-fixed {
+  @apply bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-2xl shadow-2xl flex flex-col overflow-hidden max-h-[85vh] my-auto;
 }
 
-.btn-logout {
-  @apply bg-slate-800 hover:bg-red-500/10 text-slate-300 hover:text-red-400 border border-slate-700/80 hover:border-red-500/30 px-4 py-2.5 rounded-xl font-semibold text-sm transition cursor-pointer flex items-center gap-2 shadow-sm;
+.modal-form-wrapper {
+  @apply flex flex-col flex-1 overflow-hidden;
+}
+
+/* 1. Header Fixo */
+.modal-fixed-header {
+  @apply flex justify-between items-start p-6 md:px-8 border-b border-slate-800 shrink-0 bg-slate-900;
+}
+
+/* 2. Body com Scroll Interno */
+.modal-fixed-body {
+  @apply p-6 md:p-8 overflow-y-auto flex-1 pr-4 md:pr-6;
+}
+
+/* Scrollbar Customizada do Body Interno */
+.modal-fixed-body::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modal-fixed-body::-webkit-scrollbar-track {
+  background: #0f172a;
+  border-radius: 8px;
+}
+
+.modal-fixed-body::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 8px;
+}
+
+.modal-fixed-body::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+/* 3. Footer Fixo */
+.modal-fixed-footer {
+  @apply flex items-center justify-end gap-3 p-5 md:px-8 border-t border-slate-800 shrink-0 bg-slate-900;
+}
+
+/* Estilos para a Tela/Modal de Logs */
+.logs-modal-container {
+  @apply bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-4xl shadow-2xl flex flex-col overflow-hidden max-h-[85vh] my-auto;
+}
+
+.logs-filters-grid {
+  @apply grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 bg-slate-950/60 p-4 rounded-2xl border border-slate-800 mb-4;
+}
+
+.logs-table-container {
+  @apply overflow-x-auto flex-1 max-h-[50vh] border border-slate-800 rounded-xl;
+}
+
+.logs-table {
+  @apply w-full text-left border-collapse text-xs md:text-sm;
+}
+
+.logs-table th {
+  @apply bg-slate-950 text-slate-400 font-semibold p-3.5 border-b border-slate-800 sticky top-0 z-10;
+}
+
+.logs-table td {
+  @apply p-3.5 border-b border-slate-800/60 text-slate-300;
+}
+
+.logs-table tr:hover td {
+  @apply bg-slate-800/40;
+}
+
+.btn-logs-header {
+  @apply bg-slate-800 hover:bg-slate-700 text-purple-400 hover:text-purple-300 border border-slate-700/80 px-4 py-2.5 rounded-xl font-semibold text-sm transition cursor-pointer flex items-center gap-2 shadow-sm;
 }
