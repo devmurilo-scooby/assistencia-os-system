@@ -186,17 +186,17 @@ export default function DetalhesOS({ os, onBack, onUpdateOS }) {
                   <span>⚠️</span> Defeito & Checklist Inicial
                 </h3>
                 
-                <div className="flex flex-col gap-1.5">
+                <div className="flex flex-col gap-2">
                   <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Descrição do Problema:</span>
-                  <p className="text-slate-100 bg-slate-950 p-3.5 rounded-xl border border-slate-800 text-xs leading-relaxed">
+                  <p className="text-slate-100 bg-slate-950 p-4 rounded-xl border border-slate-800 text-xs leading-relaxed">
                     {os.defeito || 'Nenhum defeito detalhado inicialmente.'}
                   </p>
                 </div>
               </div>
 
-              <div className="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs">
-                <span className="text-slate-400 font-medium">Data de Entrada:</span>
-                <strong className="text-slate-200">{formatDateTimeBR(os.dataEntrada)}</strong>
+              <div className="mt-6 pt-3 border-t border-slate-800 flex items-center justify-between text-xs">
+                <span className="text-slate-400 font-medium">Data de Entrada</span>
+                <span className="text-white font-semibold">{formatDateTimeBR(os.dataEntrada)}</span>
               </div>
             </div>
 
@@ -207,26 +207,14 @@ export default function DetalhesOS({ os, onBack, onUpdateOS }) {
                   <span>⏱️</span> Tempos de Execução
                 </h3>
 
-                <div className="bg-slate-950 rounded-xl border border-slate-800 overflow-hidden">
-                  <table className="w-full text-left text-xs">
-                    <thead>
-                      <tr className="bg-slate-900/80 text-slate-400 border-b border-slate-800">
-                        <th className="p-3 font-semibold">Atividade</th>
-                        <th className="p-3 font-semibold text-right">Duração</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td className="p-3 text-slate-400 italic" colSpan="2">Nenhum tempo registrado até o momento.</td>
-                      </tr>
-                    </tbody>
-                  </table>
+                <div className="bg-slate-950 rounded-xl border border-slate-800 p-4 text-center">
+                  <p className="text-xs text-slate-400 italic">Nenhum tempo registrado até o momento.</p>
                 </div>
               </div>
 
-              <div className="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs">
-                <span className="text-slate-400 font-medium">Total acumulado:</span>
-                <strong className="text-white font-mono bg-slate-950 px-2.5 py-1 rounded-lg border border-slate-800">00:00:00</strong>
+              <div className="mt-6 pt-3 border-t border-slate-800 flex items-center justify-between text-xs">
+                <span className="text-slate-400 font-medium">Total Acumulado</span>
+                <span className="text-white font-mono bg-slate-950 px-3 py-1 rounded-lg border border-slate-800 font-bold">00:00:00</span>
               </div>
             </div>
 
@@ -237,28 +225,28 @@ export default function DetalhesOS({ os, onBack, onUpdateOS }) {
                   <span>💬</span> Serviços & Valores
                 </h3>
 
-                <div className="flex flex-col gap-1.5">
+                <div className="flex flex-col gap-2">
                   <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Serviços Pré-Aprovados:</span>
                   {os.servicosPreAprovados?.length > 0 ? (
                     <div className="space-y-2 max-h-36 overflow-y-auto pr-1">
                       {os.servicosPreAprovados.map((s, idx) => (
-                        <div key={idx} className="flex justify-between items-center bg-slate-950 p-3 rounded-xl border border-slate-800 text-xs">
+                        <div key={idx} className="flex justify-between items-center bg-slate-950 px-3.5 py-3 rounded-xl border border-slate-800 text-xs">
                           <span className="text-slate-200 font-medium">{s.nome}</span>
-                          <span className="text-emerald-400 font-bold shrink-0 ml-2">
+                          <span className="text-emerald-400 font-bold shrink-0 ml-3">
                             R$ {Number(s.valor || 0).toFixed(2).replace('.', ',')}
                           </span>
                         </div>
                       ))}
                     </div>
                   ) : (
-                    <p className="text-xs text-slate-400 bg-slate-950 p-3.5 rounded-xl border border-slate-800">Nenhum serviço cadastrado.</p>
+                    <p className="text-xs text-slate-400 bg-slate-950 p-4 rounded-xl border border-slate-800">Nenhum serviço cadastrado.</p>
                   )}
                 </div>
               </div>
 
-              <div className="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs">
-                <span className="text-slate-400 font-medium">Previsão:</span>
-                <strong className="text-slate-200">{formatDateTimeBR(os.previsao)}</strong>
+              <div className="mt-6 pt-3 border-t border-slate-800 flex items-center justify-between text-xs">
+                <span className="text-slate-400 font-medium">Previsão de Conclusão</span>
+                <span className="text-white font-semibold">{formatDateTimeBR(os.previsao)}</span>
               </div>
             </div>
 
