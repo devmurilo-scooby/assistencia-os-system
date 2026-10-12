@@ -59,3 +59,12 @@
 .login-alert-success {
   @apply bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-medium p-4 rounded-xl text-center;
 }
+
+/* Cabeçalho do campo de senha (Senha + Link) */
+.login-senha-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 4px;
+}
